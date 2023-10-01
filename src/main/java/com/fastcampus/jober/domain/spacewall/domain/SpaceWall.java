@@ -103,4 +103,8 @@ public class SpaceWall extends BaseTimeEntity {
     public void updateUrl(String url) {
         this.url = url;
     }
+
+    public int getSizeOfPathIds() {
+        return this.pathIds.length();
+    }
 }

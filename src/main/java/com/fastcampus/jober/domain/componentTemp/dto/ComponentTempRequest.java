@@ -16,7 +16,7 @@ public class ComponentTempRequest {
         private Long id;
         private Long spaceWallTempId;
         private Long templateId;
-        private Long childSpaceWallTempId;
+        private Long childSpaceWallId;
         private Long componentId;
         private String type;
         private boolean visible;
@@ -24,9 +24,30 @@ public class ComponentTempRequest {
         private String content;
         private int sequence;
         private boolean deleted;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+    }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddDTO{
+        private Long spaceWallTempId;
+        private String type;
+        private int sequence;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ModifyDTO{
+        private Long id;
+        private Long spaceWallTempId;
+        private Long templateId;
+        private Long childSpaceWallId;
+        private String type;
+        private String title;
+        private String content;
     }
 
 }

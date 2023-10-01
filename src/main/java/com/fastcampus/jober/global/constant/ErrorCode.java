@@ -41,7 +41,8 @@ public enum ErrorCode {
     COMPONENTTEMP_NOT_FOUND(HttpStatus.BAD_REQUEST, "임시 컴포넌트를 찾을 수 없습니다."),
     INVALID_COMPONENT_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 type입니다"),
     INVALID_COMPONENTTEMPID(HttpStatus.BAD_REQUEST, "유효하지 않은 componentTempId입니다"),
-    DTO_NOT_EXISTS(HttpStatus.BAD_REQUEST, "dto가 넘어오지 않았습니다.")
+    DTO_NOT_EXISTS(HttpStatus.BAD_REQUEST, "dto가 넘어오지 않았습니다."),
+    INVALID_COMPONENTTYPE(HttpStatus.BAD_REQUEST, "template, page 타입은 조회가 불가합니다.")
 
     ;
 

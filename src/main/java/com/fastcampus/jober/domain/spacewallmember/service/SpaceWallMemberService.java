@@ -24,23 +24,22 @@ public class SpaceWallMemberService {
 
     private final SpaceWallMemberRepository spaceWallMemberRepository;
     private final SpaceWallPermissionRepository spaceWallPermissionRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public void saveSpaceWallMember(Long spaceWallId, List<SpaceWallMemberRequest.AssignDTO> requests) {
 
-        // 공동 작업자로 등록된 이메일인지 체크
+        // 공동 작업자로 등록된 이메일인지 체크 -> 오류. member 에서 찾으면 안되지.
         for (SpaceWallMemberRequest.AssignDTO request : requests) {
-            Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+            Member member = spaceWallMemberRepository.findMemberBySpaceWallIdAndEmail(spaceWallId, request.getEmail());
             SpaceWallMember assignedMember = null;
-            if (member.isPresent())
-                assignedMember = spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.get().getId());
+            if (member != null)
+                assignedMember = spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.getId());
 
             // 공동 작업자로 등록되어 있지 않은 경우
             if (assignedMember == null) {
-                spaceWallMemberRepository.insertMember(member.get().getId(), spaceWallId); // 공유스페이스 멤버 등록
+                spaceWallMemberRepository.insertMember(member.getId(), spaceWallId); // 공유스페이스 멤버 등록
                 spaceWallPermissionRepository.insertPermission( // 공유스페이스 멤버 권한 추가
-                        spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.get().getId()).getId(),
+                        spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.getId()).getId(),
                         request.getAuths()
                 );
                 continue;
@@ -66,7 +65,8 @@ public class SpaceWallMemberService {
             response.add(
                     SpaceWallMemberResponse.SpaceWallMemberDTO.builder()
                             .id(spaceWallMember.getId())
-                            .email(spaceWallMember.getMember().getEmail())
+                            .email(spaceWallMember.getEmail())
+                            .username(spaceWallMember.getUsername())
                             .auths(spaceWallPermissionRepository.selectAuths(spaceWallMember.getId()))
                             .build()
             );
@@ -93,9 +93,9 @@ public class SpaceWallMemberService {
         // 권한 삭제 -> 공동작업자 멤버 삭제
         for (SpaceWallMember spaceWallMember : spaceWallMembers) { // DB데이터 리스트
             for (SpaceWallMemberRequest.AssignDTO request : requests) { // 요청데이터 리스트
-                String emailInDB = spaceWallMember.getMember().getEmail(); // DB 공동작업자 이메일
+                String emailInDB = spaceWallMember.getEmail(); // DB 공동작업자 이메일
 
-                if (spaceWallMember.getSpaceWallPermission().getAuths().equals(Auths.OWNER)) continue;
+                if (spaceWallMember.getAuths().equals(Auths.OWNER)) continue;
                 if (request.getEmail().equals(emailInDB)) continue;
                 emails.add(emailInDB);
             }

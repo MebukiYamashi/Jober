@@ -132,14 +132,14 @@ create table space_wall_temp
 (
     id bigint primary key auto_increment,
     space_wall_id bigint not null,
+    create_member_id bigint,
     url varchar(100),
     title varchar(100),
     description varchar(100),
     profile_image_url varchar(255),
     background_image_url varchar(255),
-    path_ids varchar(100),
+--     path_ids varchar(100),
     sequence int not null,
-    create_member_id bigint,
     created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     foreign key(space_wall_id) references space_wall(id),
@@ -159,5 +159,6 @@ create table component_temp(
     created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     foreign key(space_wall_temp_id) references space_wall_temp(id),
+    foreign key (child_space_wall_id) references space_wall(id),
     foreign key(template_id) references template(id)
 )engine=InnoDB DEFAULT CHARSET=utf8mb4;

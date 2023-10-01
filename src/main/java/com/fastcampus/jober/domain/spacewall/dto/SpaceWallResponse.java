@@ -20,49 +20,82 @@ public class SpaceWallResponse {
     public static class ResponseDto {
 
         private Long id;
-        private Long create_member_id;
+        private Long createMemberId;
         private String url;
         private String title;
         private String description;
-        private String profile_image_url;
-        private String background_image_url;
-        private String path_ids;
+        private String profileImageUrl;
+        private String backgroundImageUrl;
+        private String pathIds;
         private boolean authorized;
-        private LocalDateTime created_at;
-        private LocalDateTime updated_at;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
         private int sequence;
 
         private List<ComponentResponse.ComponentResponseDTO> componentList;
+
         public ResponseDto(SpaceWall spaceWall, List<ComponentResponse.ComponentResponseDTO> componentList) {
             this.id = spaceWall.getId();
-            this.create_member_id = spaceWall.getCreateMember().getId();
+            this.createMemberId = spaceWall.getCreateMember().getId();
             this.url = spaceWall.getUrl();
             this.title = spaceWall.getTitle();
             this.description = spaceWall.getDescription();
-            this.profile_image_url = spaceWall.getProfileImageUrl();
-            this.background_image_url = spaceWall.getBackgroundImageUrl();
-            this.path_ids = spaceWall.getPathIds();
+            this.profileImageUrl = spaceWall.getProfileImageUrl();
+            this.backgroundImageUrl = spaceWall.getBackgroundImageUrl();
+            this.pathIds = spaceWall.getPathIds();
             this.authorized = spaceWall.isAuthorized();
-            this.created_at = spaceWall.getCreatedAt();
-            this.updated_at = spaceWall.getUpdatedAt();
+            this.createdAt = spaceWall.getCreatedAt();
+            this.updatedAt = spaceWall.getUpdatedAt();
             this.sequence = spaceWall.getSequence();
             this.componentList = componentList;
         }
 
         public SpaceWall toEntity() {
-            Member member = Member.builder().id(create_member_id).build();
+            Member member = Member.builder().id(createMemberId).build();
 
             return SpaceWall.builder()
-                .id(id)
-                .url(url)
-                .title(title)
-                .description(description)
-                .profileImageUrl(profile_image_url)
-                .backgroundImageUrl(background_image_url)
-                .pathIds(path_ids)
-                .authorized(authorized)
-                .sequence(sequence)
-                .build();
+                    .id(id)
+                    .url(url)
+                    .title(title)
+                    .description(description)
+                    .profileImageUrl(profileImageUrl)
+                    .backgroundImageUrl(backgroundImageUrl)
+                    .pathIds(pathIds)
+                    .authorized(authorized)
+                    .sequence(sequence)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmptySpaceResponseDto {
+
+        private Long id;
+        private Long createMemberId;
+        private String url;
+        private String title;
+        private String description;
+        private String profileImageUrl;
+        private String backgroundImageUrl;
+        private String pathIds;
+        private boolean authorized;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private int sequence;
+        private List<ComponentResponse.ComponentResponseDTO> componentList;
+
+        public EmptySpaceResponseDto(SpaceWall spaceWall) {
+            this.id = spaceWall.getId();
+            this.createMemberId = spaceWall.getCreateMember().getId();
+            this.url = spaceWall.getUrl();
+            this.pathIds = spaceWall.getPathIds();
+            this.authorized = spaceWall.isAuthorized();
+            this.createdAt = spaceWall.getCreatedAt();
+            this.updatedAt = spaceWall.getUpdatedAt();
+            this.sequence = spaceWall.getSequence();
         }
     }
 

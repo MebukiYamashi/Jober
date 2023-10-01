@@ -96,17 +96,18 @@ public class MemberService {
         for (SpaceWallMember spaceWallMember : memberRepository.selectMySpaceWallsById(currentMemberId)) {
             SpaceWall mySpaceWall = spaceWallMember.getSpaceWall();
             MySpaceWallDTO mySpaceWallsDTO = null;
-            if (mySpaceWall.getPathIds().length() == 1) { // 'path_ids'가 최상위 공유스페이스인 경우
+            if (mySpaceWall.getSizeOfPathIds() == 1) { // 'path_ids'가 최상위 공유스페이스인 경우
                 spaceWallIdList.add(mySpaceWall.getId());
                 mySpaceWallsDTO =
                         new MySpaceWallDTO(
                                 mySpaceWall.getId(),
                                 mySpaceWall.getTitle(),
-                                spaceWallMember.getSpaceWallPermission().getAuths()
+                                spaceWallMember.getAuths()
                         );
             } else if (mySpaceWall.getPathIds().length() > 1) { // 'path_ids'가 하위 공유스페이스인 경우
-                int spaceDepth = mySpaceWall.getPathIds().split("-").length;
-                Long spaceWallId = Long.parseLong(mySpaceWall.getPathIds().split("-")[spaceDepth - 2]);
+                String[] pathIdsList = mySpaceWall.getPathIds().split("-");
+                int spaceDepth = pathIdsList.length;
+                Long spaceWallId = Long.parseLong(pathIdsList[spaceDepth - 2]);
 
                 int count = 0;
                 for (Long Id : spaceWallIdList) { // 내가 속한 공유스페이스 id 모음에서 현재 대상 공유스페이스의 상위페이지 id를 검색함.
@@ -122,7 +123,7 @@ public class MemberService {
                         new MySpaceWallDTO(
                                 mySpaceWall.getId(),
                                 mySpaceWall.getTitle(),
-                                spaceWallMember.getSpaceWallPermission().getAuths()
+                                spaceWallMember.getAuths()
                         );
             }
 

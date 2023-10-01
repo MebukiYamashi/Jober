@@ -16,6 +16,7 @@ public class SpaceWallMemberResponse {
 
         private Long id;
         private String email;
+        private String username;
         private Auths auths;
     }
 }

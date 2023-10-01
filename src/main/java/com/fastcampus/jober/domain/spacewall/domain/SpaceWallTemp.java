@@ -1,5 +1,9 @@
 package com.fastcampus.jober.domain.spacewall.domain;
 
+import com.fastcampus.jober.domain.BaseTimeEntity;
+import com.fastcampus.jober.domain.member.domain.Member;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,9 +18,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "space_wall_temp")
-public class SpaceWallTemp {
+public class SpaceWallTemp extends BaseTimeEntity {
 
     @Id
+    @Column(nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,6 +29,13 @@ public class SpaceWallTemp {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "space_wall_id")
     private SpaceWall spaceWall;
+
+    @JsonIgnore
+    @JsonBackReference
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "create_member_id")
+    private Member createMember;
 
     @Column(nullable = true, length = 100)
     private String url;
@@ -40,35 +52,13 @@ public class SpaceWallTemp {
     @Column(name = "background_image_url", nullable = true, length = 200)
     private String backgroundImageUrl;
 
-    @Column(name = "path_ids", nullable = true, length = 100)
-    private String pathIds;
-
-    @Column(name = "share_url", nullable = true, length = 100)
-    private String shareUrl;
-
-    @Column(name = "share_expired_at", nullable = true)
-    private LocalDateTime shareExpiredAt;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = true)
-    private LocalDateTime updatedAt;
-
-    @Column(nullable = true)
-    private LocalDateTime deletedAt;
+//    @Column(name = "path_ids", nullable = true, length = 100)
+//    private String pathIds;
 
     @Column(nullable = false)
     private int sequence;
 
     protected SpaceWallTemp() {
 
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
     }
 }

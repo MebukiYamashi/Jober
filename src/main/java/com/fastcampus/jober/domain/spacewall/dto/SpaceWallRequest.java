@@ -75,4 +75,27 @@ public class SpaceWallRequest {
         @NotBlank(message = "URL은 빈 값이거나 공백이 들어갈 수 없습니다.")
         private String updateUrl;
     }
+    @Getter
+    @NoArgsConstructor
+    public static class EmptySpaceCreateDto {
+
+        private String url;
+        private String pathIds;
+        private Integer sequence;
+
+        public SpaceWall toEntityWithMember(Member member) {
+            return SpaceWall.builder()
+                    .createMember(member)
+                    .url(url)
+                    .pathIds(pathIds)
+                    .sequence(sequence != null ? sequence : 0)
+                    .title(null)
+                    .description(null)
+                    .profileImageUrl(null)
+                    .backgroundImageUrl(null)
+                    .authorized(false)
+                    .build();
+        }
+    }
+
 }

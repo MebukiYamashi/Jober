@@ -4,6 +4,7 @@ import com.fastcampus.jober.domain.BaseTimeEntity;
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewallpermission.domain.SpaceWallPermission;
+import com.fastcampus.jober.global.constant.Auths;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,4 +46,18 @@ public class SpaceWallMember extends BaseTimeEntity {
     @OneToOne(mappedBy = "spaceWallMember")
     @JsonManagedReference
     private SpaceWallPermission spaceWallPermission;
+
+    public String getEmail() {
+        return this.member.getEmail();
+    }
+
+    public String getUsername() {
+        return this.member.getUsername();
+    }
+
+    public Auths getAuths() {
+        return this.spaceWallPermission.getAuths();
+    }
+
+
 }

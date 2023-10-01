@@ -40,4 +40,13 @@ public class SpaceWallCreationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "공유페이지가 생성되었습니다.", createdSpaceWallDto));
     }
 
+    @PostMapping("/empty")
+    public ResponseEntity<ResponseDTO<SpaceWallResponse.EmptySpaceResponseDto>> createEmptySpace(
+            @RequestBody SpaceWallRequest.CreateDto createDto,
+            @AuthenticationPrincipal MemberDetails memberDetails) {
+
+        SpaceWallResponse.EmptySpaceResponseDto createdEmptySpaceDto = spaceWallService.createEmptySpace(createDto, memberDetails);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "빈 공유페이지가 생성되었습니다.", createdEmptySpaceDto));
+    }
 }

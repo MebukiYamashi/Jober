@@ -1,6 +1,7 @@
 package com.fastcampus.jober.domain.componentTemp.domain;
 
 import com.fastcampus.jober.domain.BaseTimeEntity;
+import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWallTemp;
 import com.fastcampus.jober.domain.template.domain.Template;
 import jakarta.persistence.Column;
@@ -38,8 +39,8 @@ public class ComponentTemp extends BaseTimeEntity {
     private Template template;
 
     @ManyToOne
-    @JoinColumn(name = "child_space_wall_temp_id")
-    private SpaceWallTemp childSpaceWallTemp;
+    @JoinColumn(name = "child_space_wall_id")
+    private SpaceWall childSpaceWall;
 
     // 본래의 컴포넌트가 있는지 체크하기 위함
     private Long componentId;
@@ -66,9 +67,9 @@ public class ComponentTemp extends BaseTimeEntity {
         this.template = template;
     }
 
-    public void setChildSpaceWallTemp(
-        SpaceWallTemp childSpaceWallTemp) {
-        this.childSpaceWallTemp = childSpaceWallTemp;
+    public void setChildSpaceWall(
+        SpaceWall childSpaceWall) {
+        this.childSpaceWall = childSpaceWall;
     }
 
     public void setComponentId(Long componentId) {

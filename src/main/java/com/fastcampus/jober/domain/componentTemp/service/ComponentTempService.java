@@ -7,6 +7,7 @@ import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempRequest;
 import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempResponse;
 import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempResponse.ComponentTempResponseDTO;
 import com.fastcampus.jober.domain.componentTemp.repository.ComponentTempRepository;
+import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWallTemp;
 import com.fastcampus.jober.domain.spacewall.repository.SpaceWallRepository;
 import com.fastcampus.jober.domain.spacewall.repository.SpaceWallTempRepository;
@@ -28,14 +29,15 @@ public class ComponentTempService {
     private final ComponentTempRepository componentTempRepository;
     private final SpaceWallTempRepository spaceWallTempRepository;
     private final TemplateRepository templateRepository;
+    private final SpaceWallRepository spaceWallRepository;
 
     @Transactional
     public ComponentTempResponseDTO addComponentTemp(
-        ComponentTempRequest.ComponentTempRequestDTO requestDTO) {
-        if (requestDTO == null) {
+        ComponentTempRequest.AddDTO addDTO) {
+        if (addDTO == null) {
             throw new ComponentTempException(ErrorCode.DTO_NOT_EXISTS);
         }
-        String type = requestDTO.getType();
+        String type = addDTO.getType();
         if (!(type.equals("text") || type.equals("line") || type.equals("link") || type.equals(
             "template") || type.equals("page"))) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENT_TYPE);
@@ -43,15 +45,15 @@ public class ComponentTempService {
 
 
 
-        SpaceWallTemp spaceWallTemp = spaceWallTempRepository.findById(requestDTO.getSpaceWallTempId()).get(); // 예외처리
+        SpaceWallTemp spaceWallTemp = spaceWallTempRepository.findById(addDTO.getSpaceWallTempId()).get(); // 예외처리
 
 
 
         ComponentTemp componentTemp = ComponentTemp.builder()
             .spaceWallTemp(spaceWallTemp)
-            .type(requestDTO.getType())
+            .type(addDTO.getType())
             .visible(false)
-            .sequence(requestDTO.getSequence())
+            .sequence(addDTO.getSequence())
             .deleted(false)
             .build();
 
@@ -64,29 +66,34 @@ public class ComponentTempService {
 
     @Transactional
     public ComponentTempResponseDTO modifyComponentTemp(
-        ComponentTempRequest.ComponentTempRequestDTO requestDTO) {
-        if (requestDTO == null) {
+        ComponentTempRequest.ModifyDTO modifyDTO) {
+        if (modifyDTO == null) {
             throw new ComponentTempException(ErrorCode.DTO_NOT_EXISTS);
         }
 
-        ComponentTemp componentTemp = componentTempRepository.findById(requestDTO.getId()).get();
+        ComponentTemp componentTemp = componentTempRepository.findById(modifyDTO.getId()).get();
 
 
-        String type = requestDTO.getType();
+        String type = modifyDTO.getType();
+
         if (type.equals("page")) {
-            SpaceWallTemp childSpaceWallTemp = spaceWallTempRepository.findById(
-                requestDTO.getChildSpaceWallTempId()).get();
+            // 페이지의 경우 생성되면 컴포넌트 바로 생성되게 하는게 좋을듯 함....
+            //성욱님이랑 프론트랑 이야기 해보기
 
-            componentTemp.setChildSpaceWallTemp(childSpaceWallTemp);
+            SpaceWall childSpaceWall = spaceWallRepository.findById(
+                modifyDTO.getChildSpaceWallId()).get();
+
+            componentTemp.setChildSpaceWall(childSpaceWall);
+
             return ComponentTempResponseDTO.toDTOPageType(componentTemp);
         } else if (type.equals("template")) {
-            Template template = templateRepository.findById(requestDTO.getTemplateId()).get();
+            Template template = templateRepository.findById(modifyDTO.getTemplateId()).get();
 
             componentTemp.setTemplate(template);
             return ComponentTempResponseDTO.toDTOTemplateType(componentTemp);
         } else {
-            componentTemp.setTitle(requestDTO.getTitle());
-            componentTemp.setContent(requestDTO.getContent());
+            componentTemp.setTitle(modifyDTO.getTitle());
+            componentTemp.setContent(modifyDTO.getContent());
             return ComponentTempResponseDTO.toDTO(componentTemp);
         }
 
@@ -102,6 +109,10 @@ public class ComponentTempService {
         ComponentTemp componentTemp = componentTempRepository.findById(componentTempId).get();
 
         //페이지, 템플릿 타입인 경우 예외처리 추가하기
+        String type = componentTemp.getType();
+        if (type.equals("tempalte") || type.equals("page")) {
+            throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTYPE);
+        }
 
         return ComponentTempResponseDTO.toDTO(componentTemp);
 

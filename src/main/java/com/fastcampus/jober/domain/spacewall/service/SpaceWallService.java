@@ -45,6 +45,17 @@ public class SpaceWallService {
         SpaceWall savedSpaceWall = spaceWallRepository.save(spaceWall);
         return new SpaceWallResponse.ResponseDto(savedSpaceWall, null);
     }
+    @Transactional
+    public SpaceWallResponse.EmptySpaceResponseDto createEmptySpace(SpaceWallRequest.CreateDto createDto, MemberDetails memberDetails) {
+        Long currentMemberId = memberDetails.getMember().getId();
+        Member currentMember = memberRepository.findById(currentMemberId)
+                .orElseThrow(() -> new RuntimeException("ID가 있는 회원을 찾을 수 없습니다.: " + currentMemberId));
+
+        SpaceWall spaceWall = createDto.toEntityWithMember(currentMember);
+        spaceWall = spaceWallRepository.save(spaceWall);
+
+        return new SpaceWallResponse.EmptySpaceResponseDto(spaceWall);
+    }
 
     @Transactional(readOnly = true)
     public SpaceWallResponse.ResponseDto findById(Long id) {

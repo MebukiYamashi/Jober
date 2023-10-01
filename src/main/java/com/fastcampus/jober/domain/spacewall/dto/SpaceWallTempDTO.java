@@ -21,17 +21,12 @@ public class SpaceWallTempDTO {
         private String description;
         private String profileImageUrl;
         private String backgroundImageUrl;
-        private String pathIds;
-        private String shareUrl;
-        private Date shareExpiredAt;
         private Integer sequence;
 
         public SpaceWallTemp toEntity() {
             Member member = Member.builder().id(createMemberId).build();
 //            Workspace workspace = Workspace.builder().id(workspaceId).build();
 
-            LocalDateTime shareExpiration = (shareExpiredAt != null) ?
-                LocalDateTime.ofInstant(shareExpiredAt.toInstant(), ZoneId.systemDefault()) : null;
 
             return SpaceWallTemp.builder()
                 .url(url)
@@ -39,9 +34,6 @@ public class SpaceWallTempDTO {
                 .description(description)
                 .profileImageUrl(profileImageUrl)
                 .backgroundImageUrl(backgroundImageUrl)
-                .pathIds(pathIds)
-                .shareUrl(shareUrl)
-                .shareExpiredAt(shareExpiration)
                 .sequence(sequence != null ? sequence : 0)
                 .build();
         }
@@ -59,9 +51,6 @@ public class SpaceWallTempDTO {
         private String description;
         private String profileImageUrl;
         private String backgroundImageUrl;
-        private String pathIds;
-        private String shareUrl;
-        private LocalDateTime shareExpiredAt;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private int sequence;
@@ -73,9 +62,6 @@ public class SpaceWallTempDTO {
             this.description = spaceWall.getDescription();
             this.profileImageUrl = spaceWall.getProfileImageUrl();
             this.backgroundImageUrl = spaceWall.getBackgroundImageUrl();
-            this.pathIds = spaceWall.getPathIds();
-            this.shareUrl = spaceWall.getShareUrl();
-            this.shareExpiredAt = spaceWall.getShareExpiredAt();
             this.createdAt = spaceWall.getCreatedAt();
             this.updatedAt = spaceWall.getUpdatedAt();
             this.sequence = spaceWall.getSequence();

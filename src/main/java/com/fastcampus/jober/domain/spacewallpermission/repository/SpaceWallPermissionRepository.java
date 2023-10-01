@@ -17,8 +17,8 @@ public interface SpaceWallPermissionRepository extends JpaRepository<SpaceWallPe
 
     @Modifying
     @Query(
-            value = "INSERT INTO space_wall_permission (space_wall_member_id, auths, type, created_at) " +
-                    "VALUES (:spaceWallMemberId, :#{#auths.name()}, 'WHITE', now())",
+            value = "INSERT INTO space_wall_permission (space_wall_member_id, auths, created_at) " +
+                    "VALUES (:spaceWallMemberId, :#{#auths.name()}, now())",
             nativeQuery = true
     )
     void insertPermission(@Param("spaceWallMemberId") Long spaceWallMemberId, @Param("auths") Auths auths);
