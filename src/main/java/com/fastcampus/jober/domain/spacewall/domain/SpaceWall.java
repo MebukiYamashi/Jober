@@ -6,21 +6,15 @@ import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -64,10 +58,15 @@ public class SpaceWall extends BaseTimeEntity {
     private String pathIds;
 
     @Column(nullable = false)
+    @ColumnDefault("false")
     private boolean authorized;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private int sequence;
+
+    @Column(name = "parent_space_wall_id")
+    private Long parentSpaceWallId;
 
     protected SpaceWall() {
 
@@ -106,5 +105,9 @@ public class SpaceWall extends BaseTimeEntity {
 
     public int getSizeOfPathIds() {
         return this.pathIds.length();
+    }
+
+    public void updateAuthorized(boolean authorized) {
+        this.authorized = authorized;
     }
 }

@@ -21,6 +21,7 @@ public class SpaceWallHistoryResponse {
         private String pathIds;
         private boolean authorized;
         private int sequence;
+        private Long parentSpaceWallId;
 
         public SpaceWallHistoryResponseDTO(SpaceWallHistory spaceWallHistory) {
             this.id = spaceWallHistory.getId();
@@ -34,6 +35,7 @@ public class SpaceWallHistoryResponse {
             this.pathIds = spaceWallHistory.getPathIds();
             this.authorized = spaceWallHistory.isAuthorized();
             this.sequence = spaceWallHistory.getSequence();
+            this.parentSpaceWallId = spaceWallHistory.getParentSpaceWallId();
         }
     }
 

@@ -45,4 +45,6 @@ public class SpaceWallHistory extends BaseTimeEntity {
     private int sequence;
 
     private Long createMemberId;
+
+    private Long parentSpaceWallId;
 }

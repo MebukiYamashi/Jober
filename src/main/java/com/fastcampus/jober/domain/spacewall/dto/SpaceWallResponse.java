@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.fastcampus.jober.domain.component.dto.ComponentResponse.*;
+
 public class SpaceWallResponse {
 
     @Getter
@@ -27,14 +29,14 @@ public class SpaceWallResponse {
         private String profileImageUrl;
         private String backgroundImageUrl;
         private String pathIds;
+        private Long parentSpaceWallId;
         private boolean authorized;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private int sequence;
 
-        private List<ComponentResponse.ComponentResponseDTO> componentList;
-
-        public ResponseDto(SpaceWall spaceWall, List<ComponentResponse.ComponentResponseDTO> componentList) {
+        private List<ComponentResponseDTO> componentList;
+        public ResponseDto(SpaceWall spaceWall, List<ComponentResponseDTO> componentList) {
             this.id = spaceWall.getId();
             this.createMemberId = spaceWall.getCreateMember().getId();
             this.url = spaceWall.getUrl();
@@ -44,6 +46,7 @@ public class SpaceWallResponse {
             this.backgroundImageUrl = spaceWall.getBackgroundImageUrl();
             this.pathIds = spaceWall.getPathIds();
             this.authorized = spaceWall.isAuthorized();
+            this.parentSpaceWallId = spaceWall.getParentSpaceWallId();
             this.createdAt = spaceWall.getCreatedAt();
             this.updatedAt = spaceWall.getUpdatedAt();
             this.sequence = spaceWall.getSequence();

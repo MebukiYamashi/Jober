@@ -2,7 +2,6 @@ package com.fastcampus.jober.global.auth.jwt;
 
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
-import com.fastcampus.jober.global.error.exception.TokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,10 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 
-import static com.fastcampus.jober.global.constant.ErrorCode.NOT_FOUNT_JWT;
-
 @Slf4j
-//@Component
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private JwtTokenProvider jwtTokenProvider;

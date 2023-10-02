@@ -21,5 +21,7 @@ public class SpaceWallHistoryRequest {
         private String pathIds;
         private boolean authorized;
         private int sequence;
+        private Long createMemberId;
+        private Long parentSpaceWallId;
     }
 }

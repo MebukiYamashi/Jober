@@ -11,6 +11,7 @@ public enum ErrorCode {
     INVALID_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "인증되지 않았습니다"), // 비로그인
     INVALID_ACCESS(HttpStatus.METHOD_NOT_ALLOWED, "잘못된 접근입니다"),
     INVALID_USER(HttpStatus.FORBIDDEN, "권한이 없습니다"), // 설정한 권한과 맞지 않은 권한
+    NOT_ALLOWED_DELETE_SPACE_WALL_MEMBER(HttpStatus.BAD_REQUEST, "자기 자신 또는 생성자를 제외할 수 없습니다."),
 
     // 계정 관련 오류
     EMPTY_ID(HttpStatus.BAD_REQUEST, "아이디를 입력해주세요"),
@@ -20,6 +21,7 @@ public enum ErrorCode {
     CHECK_ID(HttpStatus.BAD_REQUEST, "아이디를 확인해주세요"),
     CHECK_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호를 확인해주세요"),
 
+    NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "해당 사용자를 찾을 수 없습니다."),
     TEMPLATE_NOT_FOUND(HttpStatus.BAD_REQUEST, "템플릿 정보를 찾을 수 없습니다."),
     TEMPLATE_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "템플릿 분류를 확인해주세요."),
     PAGE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "페이지 번호는 0보다 작을 수 없습니다."),

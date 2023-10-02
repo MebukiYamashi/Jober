@@ -9,6 +9,7 @@ import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
 import com.fastcampus.jober.global.auth.jwt.JwtTokenProvider;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
+import com.fastcampus.jober.global.constant.Auths;
 import com.fastcampus.jober.global.error.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,43 +94,42 @@ public class MemberService {
 
         List<MySpaceWallDTO> mySpaceWallsDTOs = new ArrayList<>();
         List<Long> spaceWallIdList = new ArrayList<>();
+
         for (SpaceWallMember spaceWallMember : memberRepository.selectMySpaceWallsById(currentMemberId)) {
             SpaceWall mySpaceWall = spaceWallMember.getSpaceWall();
-            MySpaceWallDTO mySpaceWallsDTO = null;
-            if (mySpaceWall.getSizeOfPathIds() == 1) { // 'path_ids'가 최상위 공유스페이스인 경우
+            Long parsedParentSpaceWallId = mySpaceWall.getParentSpaceWallId();
+            // 최상위 공유스페이스인 경우
+            if (parsedParentSpaceWallId == null) {
                 spaceWallIdList.add(mySpaceWall.getId());
-                mySpaceWallsDTO =
+                MySpaceWallDTO mySpaceWallsDTO =
                         new MySpaceWallDTO(
                                 mySpaceWall.getId(),
                                 mySpaceWall.getTitle(),
                                 spaceWallMember.getAuths()
                         );
-            } else if (mySpaceWall.getPathIds().length() > 1) { // 'path_ids'가 하위 공유스페이스인 경우
-                String[] pathIdsList = mySpaceWall.getPathIds().split("-");
-                int spaceDepth = pathIdsList.length;
-                Long spaceWallId = Long.parseLong(pathIdsList[spaceDepth - 2]);
-
-                int count = 0;
-                for (Long Id : spaceWallIdList) { // 내가 속한 공유스페이스 id 모음에서 현재 대상 공유스페이스의 상위페이지 id를 검색함.
-                    if (spaceWallId.equals(Id)) count++;
-                }
-                if (count != 0) { // 이미 있는 경우 현재 공유스페이스 id를 모음에 넣고, 로직 건너뜀(공유스페이스 목록에 추가하지 않음).
-                    spaceWallIdList.add(mySpaceWall.getId());
-                    continue;
-                }
-
-                spaceWallIdList.add(mySpaceWall.getId());
-                mySpaceWallsDTO =
-                        new MySpaceWallDTO(
-                                mySpaceWall.getId(),
-                                mySpaceWall.getTitle(),
-                                spaceWallMember.getAuths()
-                        );
+                mySpaceWallsDTOs.add(mySpaceWallsDTO);
+                continue;
             }
-
+            // 하위 공유스페이스인 경우
+            int count = 0;
+            for (Long Id : spaceWallIdList) { // 내가 속한 공유스페이스 id 모음에서 현재 대상 공유스페이스의 상위페이지 id를 검색함.
+                if (parsedParentSpaceWallId.equals(Id)) {
+                    count++;
+                }
+            }
+            if (count != 0) { // 이미 있는 경우 현재 공유스페이스 id를 모음에 넣고, 로직 건너뜀(공유스페이스 목록에 추가하지 않음).
+                spaceWallIdList.add(mySpaceWall.getId());
+                continue;
+            }
+            spaceWallIdList.add(mySpaceWall.getId());
+            MySpaceWallDTO mySpaceWallsDTO =
+                    new MySpaceWallDTO(
+                            mySpaceWall.getId(),
+                            mySpaceWall.getTitle(),
+                            spaceWallMember.getAuths()
+                    );
             mySpaceWallsDTOs.add(mySpaceWallsDTO);
         }
-
         return mySpaceWallsDTOs;
     }
 }

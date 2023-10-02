@@ -53,6 +53,7 @@ create table space_wall
     path_ids varchar(100),
     sequence int not null,
     authorized boolean not null default false,
+    parent_space_wall_id bigint,
     create_member_id bigint not null,
     created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -109,6 +110,7 @@ create table space_wall_history
     path_ids varchar(100),
     authorized boolean,
     sequence int,
+    parent_space_wall_id bigint,
     create_member_id bigint not null,
     created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP

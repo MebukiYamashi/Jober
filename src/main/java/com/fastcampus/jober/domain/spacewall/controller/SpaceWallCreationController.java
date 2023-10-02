@@ -11,13 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/newspaces")
+@RequestMapping("/new-spaces")
 @RequiredArgsConstructor
 public class SpaceWallCreationController {
 
@@ -26,27 +27,30 @@ public class SpaceWallCreationController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<SpaceWallResponse.ResponseDto>> create(
-            @RequestBody SpaceWallRequest.CreateDto createDto,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @RequestBody SpaceWallRequest.CreateDto createDto
+    ) {
+        MemberDetails memberDetails =
+                (MemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long currentMemberId = memberDetails.getMemberId();
 
-        SpaceWallResponse.ResponseDto createdSpaceWallDto = spaceWallService.create(createDto, memberDetails);
+        SpaceWallResponse.ResponseDto createdSpaceWallDto = spaceWallService.create(createDto, currentMemberId);
 
         if (createdSpaceWallDto == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        permissionService.assignPermissionToSpaceWall(Auths.OWNER, createdSpaceWallDto.getId(), memberDetails.getMember().getId());
+        permissionService.assignPermissionToSpaceWall(Auths.OWNER, createdSpaceWallDto.getId(), currentMemberId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "공유페이지가 생성되었습니다.", createdSpaceWallDto));
     }
 
-    @PostMapping("/empty")
-    public ResponseEntity<ResponseDTO<SpaceWallResponse.EmptySpaceResponseDto>> createEmptySpace(
-            @RequestBody SpaceWallRequest.CreateDto createDto,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
-
-        SpaceWallResponse.EmptySpaceResponseDto createdEmptySpaceDto = spaceWallService.createEmptySpace(createDto, memberDetails);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "빈 공유페이지가 생성되었습니다.", createdEmptySpaceDto));
-    }
+//    @PostMapping("/empty")
+//    public ResponseEntity<ResponseDTO<SpaceWallResponse.EmptySpaceResponseDto>> createEmptySpace(
+//            @RequestBody SpaceWallRequest.CreateDto createDto,
+//            @AuthenticationPrincipal MemberDetails memberDetails) {
+//
+//        SpaceWallResponse.EmptySpaceResponseDto createdEmptySpaceDto = spaceWallService.createEmptySpace(createDto, memberDetails);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "빈 공유페이지가 생성되었습니다.", createdEmptySpaceDto));
+//    }
 }

@@ -70,4 +70,8 @@ public class MemberDetails implements UserDetails {
     }
 
     public Long getMemberId() { return member.getId(); }
+
+    public String getMemberEmail() {
+        return member.getEmail();
+    }
 }

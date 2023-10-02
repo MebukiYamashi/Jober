@@ -55,6 +55,9 @@ dependencies {
 
     //Azure blob storage
     implementation 'com.azure:azure-storage-blob:12.24.0'
+
+    // macOS
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 }
 
 tasks.named('test') {

@@ -1,8 +1,9 @@
 package com.fastcampus.jober.domain.spacewallmember.controller;
 
+import com.fastcampus.jober.domain.member.service.MemberService;
 import com.fastcampus.jober.domain.spacewall.service.SpaceWallService;
-import com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberRequest;
 import com.fastcampus.jober.domain.spacewallmember.service.SpaceWallMemberService;
+import com.fastcampus.jober.global.error.exception.MemberException;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import jakarta.validation.Valid;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberRequest.AssignDTO;
 import static com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberResponse.SpaceWallMemberDTO;
 import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_REQUEST;
+import static com.fastcampus.jober.global.constant.ErrorCode.NOT_FOUND_MEMBER;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class SpaceWallMemberController {
 
     private final SpaceWallMemberService spaceWallMemberService;
     private final SpaceWallService spaceWallService;
+    private final MemberService memberService;
 
     /**
      * 공유 멤버 등록 시 객체 리스트를 Json 데이터로 받아 정보를 갱신합니다.<br>
@@ -37,10 +41,12 @@ public class SpaceWallMemberController {
     @PostMapping("/member/{spaceWallId}")
     public ResponseEntity<ResponseDTO<String>> spaceWallMemberAdd(
             @PathVariable Long spaceWallId,
-            @Valid @RequestBody List<SpaceWallMemberRequest.AssignDTO> requests
+            @Valid @RequestBody List<AssignDTO> requests
     ) {
-        if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
+        if (!spaceWallService.checkSpaceWallIdExists(spaceWallId)) // SpaceWall 에 존재하지 않는 id 검색
             throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
+        if (!isExistMemberValid(requests)) // Member 에 존재하지 않는 email 검색
+            throw new MemberException(NOT_FOUND_MEMBER);
 
         spaceWallMemberService.saveSpaceWallMember(spaceWallId, requests);
 
@@ -62,5 +68,14 @@ public class SpaceWallMemberController {
                         spaceWallMemberService.findSpaceWallMember(spaceWallId),
                         "공동 작업자 정보를 조회합니다.")
         );
+    }
+
+    public boolean isExistMemberValid(List<AssignDTO> requests) {
+        int countForMemberExists = 0;
+        for (AssignDTO assignDTO : requests) {
+            if (memberService.checkEmailDuplication(assignDTO.getEmail()))
+                countForMemberExists++;
+        }
+        return countForMemberExists == requests.size();
     }
 }

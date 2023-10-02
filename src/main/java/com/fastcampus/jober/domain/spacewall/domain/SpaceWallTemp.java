@@ -37,23 +37,38 @@ public class SpaceWallTemp extends BaseTimeEntity {
     @JoinColumn(name = "create_member_id")
     private Member createMember;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100)
     private String url;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100)
     private String title;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100)
     private String description;
 
-    @Column(name = "profile_image_url", nullable = true, length = 200)
+    @Column(name = "profile_image_url", length = 200)
     private String profileImageUrl;
 
-    @Column(name = "background_image_url", nullable = true, length = 200)
+    @Column(name = "background_image_url", length = 200)
     private String backgroundImageUrl;
 
-//    @Column(name = "path_ids", nullable = true, length = 100)
-//    private String pathIds;
+    @Column(name = "path_ids", length = 100)
+    private String pathIds;
+
+    @Column(name = "share_url", length = 100)
+    private String shareUrl;
+
+    @Column(name = "share_expired_at")
+    private LocalDateTime shareExpiredAt;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
+
+    @Column
+    private LocalDateTime deletedAt;
 
     @Column(nullable = false)
     private int sequence;

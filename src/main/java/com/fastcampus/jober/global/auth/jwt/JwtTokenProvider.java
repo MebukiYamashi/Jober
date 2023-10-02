@@ -20,8 +20,8 @@ import java.util.*;
 import static com.fastcampus.jober.domain.member.dto.MemberResponse.PermissionMappedDTO;
 import static com.fastcampus.jober.global.constant.ErrorCode.*;
 
-@Component
 @Slf4j
+@Component
 public class JwtTokenProvider {
 
     public static final Long EXP = 1000L * 60 * 60; // 1시간

@@ -3,7 +3,7 @@ package com.fastcampus.jober.domain.spacewall.controller;
 import com.fastcampus.jober.domain.spacewall.dto.SpaceWallRequest;
 import com.fastcampus.jober.domain.spacewall.dto.SpaceWallRequest.UrlUpdateDto;
 import com.fastcampus.jober.domain.spacewall.dto.SpaceWallResponse;
-import com.fastcampus.jober.domain.spacewall.dto.SpaceWallResponse.SessionDTO;
+
 import com.fastcampus.jober.domain.spacewall.service.SpaceWallService;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
@@ -13,14 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/spaces")
@@ -64,8 +57,8 @@ public class SpaceWallController {
     public ResponseEntity<?> checkEditMode(@PathVariable Long id, HttpSession session,
         @AuthenticationPrincipal
         MemberDetails memberDetails) {
-        SessionDTO sessionDTO = spaceWallService.checkEditSession(memberDetails.getMember().getId(),
-            id, session);
+        SpaceWallResponse.SessionDTO sessionDTO =
+                spaceWallService.checkEditSession(memberDetails.getMember().getId(), id, session);
 
         return new ResponseEntity<>(new ResponseDTO<>(HttpStatus.OK, "정상적으로 처리되었습니다.", sessionDTO),
             HttpStatus.OK);
@@ -79,6 +72,16 @@ public class SpaceWallController {
 
         return new ResponseEntity<>(
             new ResponseDTO<>(HttpStatus.OK, "정상적으로 처리되었습니다.", updateUrl),
+            HttpStatus.OK);
+    }
+
+    @PutMapping("/show/{id}")
+    public ResponseEntity<ResponseDTO<String>> authorizedModify(@PathVariable Long id,
+        @RequestParam boolean authorized) {
+
+        spaceWallService.modifyAuthorized(id, authorized);
+
+        return new ResponseEntity<>(new ResponseDTO<>(HttpStatus.OK, "정상적으로 처리되었습니다.", null),
             HttpStatus.OK);
     }
 }

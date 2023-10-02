@@ -26,4 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m.spaceWallMember FROM Member m WHERE m.id = :memberId")
     List<SpaceWallMember> selectMySpaceWallsById(@Param("memberId") Long memberId);
+
+    @Query("SELECT sw.createMember FROM SpaceWall sw WHERE sw.id = :spaceWallId")
+    Member findCreateMemberBySpaceWallId(@Param("spaceWallId") Long spaceWallId);
 }

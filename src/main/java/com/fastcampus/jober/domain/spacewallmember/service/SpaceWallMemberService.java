@@ -7,15 +7,18 @@ import com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberRequest;
 import com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberResponse;
 import com.fastcampus.jober.domain.spacewallmember.repository.SpaceWallMemberRepository;
 import com.fastcampus.jober.domain.spacewallpermission.repository.SpaceWallPermissionRepository;
-import com.fastcampus.jober.global.constant.Auths;
+import com.fastcampus.jober.global.auth.session.MemberDetails;
+import com.fastcampus.jober.global.error.exception.SpaceWallMemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.fastcampus.jober.global.constant.ErrorCode.NOT_ALLOWED_DELETE_SPACE_WALL_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,22 +27,27 @@ public class SpaceWallMemberService {
 
     private final SpaceWallMemberRepository spaceWallMemberRepository;
     private final SpaceWallPermissionRepository spaceWallPermissionRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public void saveSpaceWallMember(Long spaceWallId, List<SpaceWallMemberRequest.AssignDTO> requests) {
 
-        // 공동 작업자로 등록된 이메일인지 체크 -> 오류. member 에서 찾으면 안되지.
+        // 공동 작업자로 등록된 이메일인지 체크
         for (SpaceWallMemberRequest.AssignDTO request : requests) {
-            Member member = spaceWallMemberRepository.findMemberBySpaceWallIdAndEmail(spaceWallId, request.getEmail());
+            Member member =
+                    spaceWallMemberRepository
+                            .findSpaceWallMemberBySpaceWallIdAndEmail(spaceWallId, request.getEmail())
+                            .getMember();
             SpaceWallMember assignedMember = null;
             if (member != null)
                 assignedMember = spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.getId());
 
             // 공동 작업자로 등록되어 있지 않은 경우
             if (assignedMember == null) {
-                spaceWallMemberRepository.insertMember(member.getId(), spaceWallId); // 공유스페이스 멤버 등록
+                Long memberId = memberRepository.findByEmail(request.getEmail()).get().getId();
+                spaceWallMemberRepository.insertMember(memberId, spaceWallId); // 공유스페이스 멤버 등록
                 spaceWallPermissionRepository.insertPermission( // 공유스페이스 멤버 권한 추가
-                        spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, member.getId()).getId(),
+                        spaceWallMemberRepository.selectSpaceWallMember(spaceWallId, memberId).getId(),
                         request.getAuths()
                 );
                 continue;
@@ -48,11 +56,17 @@ public class SpaceWallMemberService {
             spaceWallPermissionRepository.updatePermission(assignedMember.getId(), request.getAuths());
         }
 
-        // 요청 데이터와 DB에 저장된 데이터 사이즈 비교하고, 다를 경우 차이나는 공동 작업자 삭제
-        if (!isEqualSizeOfSpaceWallMember(spaceWallId, requests.size())) {
-            List<String> emails = findAllEmailsNotInRequest(spaceWallId, requests);
-            removeAllSpaceWallMembers(spaceWallId, emails);
+        // 요청 데이터와 DB에 저장된 데이터가 다를 경우, 차이나는 공동 작업자 삭제
+        List<String> emails = findAllEmailsNotInRequest(spaceWallId, requests);
+        MemberDetails memberDetails =
+                (MemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String ownEmail = memberDetails.getMemberEmail();
+        String creatorEmail = memberRepository.findCreateMemberBySpaceWallId(spaceWallId).getEmail();
+        for (String email : emails) { // 자기 자신이거나 생성자 OWNER 인경우
+            if (email.equals(creatorEmail) || email.equals(ownEmail))
+                throw new SpaceWallMemberException(NOT_ALLOWED_DELETE_SPACE_WALL_MEMBER);
         }
+        removeAllSpaceWallMembers(spaceWallId, emails);
     }
 
     @Transactional
@@ -95,11 +109,14 @@ public class SpaceWallMemberService {
             for (SpaceWallMemberRequest.AssignDTO request : requests) { // 요청데이터 리스트
                 String emailInDB = spaceWallMember.getEmail(); // DB 공동작업자 이메일
 
-                if (spaceWallMember.getAuths().equals(Auths.OWNER)) continue;
                 if (request.getEmail().equals(emailInDB)) continue;
                 emails.add(emailInDB);
             }
         }
         return emails;
+    }
+
+    public SpaceWallMember findSpaceWallMember(Long spaceWallId, String email) {
+        return spaceWallMemberRepository.findSpaceWallMemberBySpaceWallIdAndEmail(spaceWallId, email);
     }
 }

@@ -4,7 +4,6 @@ import com.fastcampus.jober.domain.member.dto.MemberRequest;
 import com.fastcampus.jober.domain.member.service.MemberService;
 import com.fastcampus.jober.global.auth.jwt.JwtTokenProvider;
 import com.fastcampus.jober.global.error.exception.MemberException;
-import com.fastcampus.jober.global.error.exception.TokenException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -19,7 +18,6 @@ import java.util.Map;
 import static com.fastcampus.jober.domain.member.dto.MemberResponse.JoinDTO;
 import static com.fastcampus.jober.domain.member.dto.MemberResponse.MySpaceWallDTO;
 import static com.fastcampus.jober.global.constant.ErrorCode.DUPLICATED_EMAIL;
-import static com.fastcampus.jober.global.constant.ErrorCode.NOT_FOUNT_JWT;
 
 @RestController
 @RequiredArgsConstructor

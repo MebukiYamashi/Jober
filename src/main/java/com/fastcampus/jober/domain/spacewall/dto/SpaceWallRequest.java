@@ -3,11 +3,7 @@ package com.fastcampus.jober.domain.spacewall.dto;
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 public class SpaceWallRequest {
 
@@ -17,27 +13,14 @@ public class SpaceWallRequest {
     @AllArgsConstructor
     public static class CreateDto {
 
-        private String url;
-        private String title;
-        private String description;
-        private String profileImageUrl;
-        private String backgroundImageUrl;
-        private String pathIds;
-        private boolean authorized;
-        private Integer sequence;
+        private Long parentSpaceWallId;
 
-        public SpaceWall toEntityWithMember(Member member) {
+        public SpaceWall toEntityWithMember(Member member, String pathIds, Long parentSpaceWallId) {
             return SpaceWall.builder()
-                .createMember(member)
-                .url(url)
-                .title(title)
-                .description(description)
-                .profileImageUrl(profileImageUrl)
-                .backgroundImageUrl(backgroundImageUrl)
-                .pathIds(pathIds)
-                .authorized(authorized)
-                .sequence(sequence != null ? sequence : 0)
-                .build();
+                    .createMember(member)
+                    .parentSpaceWallId(parentSpaceWallId)
+                    .pathIds(pathIds)
+                    .build();
         }
     }
 

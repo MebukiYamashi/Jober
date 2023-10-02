@@ -1,5 +1,6 @@
 package com.fastcampus.jober.domain.spacewall.repository;
 
+import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,5 @@ public interface SpaceWallRepository extends JpaRepository<SpaceWall, Long> {
     boolean existsSpaceWallById(Long id);
 
     boolean existsByUrl(String url);
+
 }

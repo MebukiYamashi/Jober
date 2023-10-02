@@ -54,6 +54,7 @@ public class SpaceWallHistoryService {
                 .authorized(spaceWallHistoryRequest.isAuthorized())
                 .sequence(spaceWallHistoryRequest.getSequence())
                 .createMemberId(currentMemberId)
+                .parentSpaceWallId(spaceWallHistoryRequest.getParentSpaceWallId())
                 .build();
 
         SpaceWallHistoryResponseDTO spaceWallHistoryResponse =
