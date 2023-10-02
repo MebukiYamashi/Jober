@@ -29,16 +29,16 @@ public class Component extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "space_wall_id")
-    private SpaceWall spaceWall;
+    @JoinColumn(name = "parent_space_wall_id")
+    private SpaceWall parentSpaceWall;
 
     @ManyToOne
     @JoinColumn(name = "template_id")
     private Template template;
 
     @ManyToOne
-    @JoinColumn(name = "child_space_wall_id")
-    private SpaceWall childSpaceWall;
+    @JoinColumn(name = "this_space_wall_id")
+    private SpaceWall thisSpaceWall;
 
     @Column(nullable = false, length = 10)
     private String type;

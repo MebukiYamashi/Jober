@@ -31,7 +31,7 @@ public class ComponentTempRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddDTO{
-        private Long spaceWallTempId;
+        private Long parentSpaceWallTempId;
         private String type;
         private int sequence;
     }
@@ -41,11 +41,9 @@ public class ComponentTempRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ModifyDTO{
-        private Long id;
-        private Long spaceWallTempId;
+        private Long componentTempId;
         private Long templateId;
-        private Long childSpaceWallId;
-        private String type;
+        private Long thisSpaceWallId;
         private String title;
         private String content;
     }

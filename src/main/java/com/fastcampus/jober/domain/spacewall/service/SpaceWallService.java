@@ -10,6 +10,9 @@ import com.fastcampus.jober.domain.spacewall.dto.SpaceWallRequest.UrlUpdateDto;
 import com.fastcampus.jober.domain.spacewall.dto.SpaceWallResponse;
 import com.fastcampus.jober.domain.spacewall.dto.SpaceWallResponse.SessionDTO;
 import com.fastcampus.jober.domain.spacewall.repository.SpaceWallRepository;
+import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.spacewallmember.repository.SpaceWallMemberRepository;
+import com.fastcampus.jober.domain.spacewallpermission.repository.SpaceWallPermissionRepository;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
 import com.fastcampus.jober.global.error.exception.SpaceWallBadRequestException;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
@@ -29,6 +32,8 @@ public class SpaceWallService {
     private final SpaceWallRepository spaceWallRepository;
     private final MemberRepository memberRepository;
     private final ComponentService componentService;
+    private final SpaceWallMemberRepository spaceWallMemberRepository;
+    private final SpaceWallPermissionRepository spaceWallPermissionRepository;
 
     @Transactional
     public SpaceWallResponse.ResponseDto create(
@@ -111,11 +116,23 @@ public class SpaceWallService {
         }
 
         SpaceWall spaceWall = spaceWallRepository.findById(id)
-            .orElseThrow(() -> new SpaceWallNotFoundException("ID가 있는 공유페이지을 찾을 수 없습니다.: " + id));
+                .orElseThrow(() -> new SpaceWallNotFoundException("ID가 있는 공유페이지을 찾을 수 없습니다.: " + id));
+
+        if (!spaceWall.getCreateMember().getId().equals(memberDetails.getMember().getId())) {
+            throw new SpaceWallBadRequestException("이 공유페이지를 삭제할 권한이 없습니다.");
+        }
 
         if ("1".equals(spaceWall.getPathIds())) {
             throw new SpaceWallBadRequestException("최상단의 공유페이지는 삭제할 수 없습니다.");
         }
+
+        List<SpaceWallMember> spaceWallMembers = spaceWall.getSpaceWallMember();
+
+        for (SpaceWallMember member : spaceWallMembers) {
+            spaceWallPermissionRepository.deleteAllBySpaceWallMemberId(member.getId());
+        }
+
+        spaceWallMemberRepository.deleteAll(spaceWallMembers);
 
         spaceWallRepository.delete(spaceWall);
     }

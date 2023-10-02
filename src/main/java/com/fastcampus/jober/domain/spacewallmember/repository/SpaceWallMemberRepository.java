@@ -32,9 +32,9 @@ public interface SpaceWallMemberRepository extends JpaRepository<SpaceWallMember
 
     @Modifying
     @Query(value = "DELETE FROM space_wall_member WHERE id = " +
-            "(SELECT swm.id FROM member m " +
-            "INNER JOIN space_wall_member swm ON m.id = swm.member_id " +
-            "WHERE swm.space_wall_id = :spaceWallId AND m.email = :email);", nativeQuery = true)
+            "(SELECT swm.id FROM space_wall_member swm " +
+            "INNER JOIN member m ON m.id = swm.member_id " +
+            "WHERE swm.space_wall_id = :spaceWallId AND m.email = :email)", nativeQuery = true)
     void deleteAllSpaceWallMemberByEmail(@Param("spaceWallId") Long spaceWallId, @Param("email") String email);
 
     @Query("SELECT swm FROM SpaceWallMember swm WHERE swm.spaceWall.id = :spaceWallId AND swm.member.email = :email")

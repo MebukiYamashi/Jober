@@ -4,20 +4,16 @@ import com.fastcampus.jober.domain.component.domain.Component;
 import com.fastcampus.jober.domain.component.repository.ComponentRepository;
 import com.fastcampus.jober.domain.componentTemp.domain.ComponentTemp;
 import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempRequest;
-import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempResponse;
 import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempResponse.ComponentTempResponseDTO;
 import com.fastcampus.jober.domain.componentTemp.repository.ComponentTempRepository;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
-import com.fastcampus.jober.domain.spacewall.domain.SpaceWallTemp;
+import com.fastcampus.jober.domain.spacewalltemp.domain.SpaceWallTemp;
 import com.fastcampus.jober.domain.spacewall.repository.SpaceWallRepository;
-import com.fastcampus.jober.domain.spacewall.repository.SpaceWallTempRepository;
+import com.fastcampus.jober.domain.spacewalltemp.repository.SpaceWallTempRepository;
 import com.fastcampus.jober.domain.template.domain.Template;
 import com.fastcampus.jober.domain.template.repository.TemplateRepository;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.error.exception.ComponentTempException;
-import com.fastcampus.jober.global.error.exception.TemplateException;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +26,7 @@ public class ComponentTempService {
     private final SpaceWallTempRepository spaceWallTempRepository;
     private final TemplateRepository templateRepository;
     private final SpaceWallRepository spaceWallRepository;
+    private final ComponentRepository componentRepository;
 
     @Transactional
     public ComponentTempResponseDTO addComponentTemp(
@@ -37,20 +34,18 @@ public class ComponentTempService {
         if (addDTO == null) {
             throw new ComponentTempException(ErrorCode.DTO_NOT_EXISTS);
         }
+
         String type = addDTO.getType();
-        if (!(type.equals("text") || type.equals("line") || type.equals("link") || type.equals(
-            "template") || type.equals("page"))) {
+
+        if (!(type.equals("cont") || type.equals("temp") || type.equals("link") || type.equals(
+            "line") || type.equals("page"))) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENT_TYPE);
         }
 
-
-
-        SpaceWallTemp spaceWallTemp = spaceWallTempRepository.findById(addDTO.getSpaceWallTempId()).get(); // 예외처리
-
-
+        SpaceWallTemp parentSpaceWallTemp = spaceWallTempRepository.findById(addDTO.getParentSpaceWallTempId()).get(); // 예외처리
 
         ComponentTemp componentTemp = ComponentTemp.builder()
-            .spaceWallTemp(spaceWallTemp)
+            .parentSpaceWallTemp(parentSpaceWallTemp)
             .type(addDTO.getType())
             .visible(false)
             .sequence(addDTO.getSequence())
@@ -71,32 +66,44 @@ public class ComponentTempService {
             throw new ComponentTempException(ErrorCode.DTO_NOT_EXISTS);
         }
 
-        ComponentTemp componentTemp = componentTempRepository.findById(modifyDTO.getId()).get();
+        ComponentTemp componentTemp = componentTempRepository.findById(modifyDTO.getComponentTempId()).get();
 
 
-        String type = modifyDTO.getType();
+        String type = componentTemp.getType();
 
-        if (type.equals("page")) {
-            // 페이지의 경우 생성되면 컴포넌트 바로 생성되게 하는게 좋을듯 함....
-            //성욱님이랑 프론트랑 이야기 해보기
+        if (type.equals("page")) { // 페이지타입
+            SpaceWall thisSpaceWall = spaceWallRepository.findById(modifyDTO.getThisSpaceWallId()).get();
 
-            SpaceWall childSpaceWall = spaceWallRepository.findById(
-                modifyDTO.getChildSpaceWallId()).get();
+            componentTemp.setThisSpaceWall(thisSpaceWall);
 
-            componentTemp.setChildSpaceWall(childSpaceWall);
+//            컴포넌트 바로 생성...
+            Component component = Component.builder()
+                .parentSpaceWall(componentTemp.getParentSpaceWallTemp().getSpaceWall())
+                .thisSpaceWall(componentTemp.getThisSpaceWall())
+                .type(componentTemp.getType())
+                .visible(componentTemp.isVisible())
+                .sequence(componentTemp.getSequence())
+                .build();
+
+            componentRepository.save(component);
 
             return ComponentTempResponseDTO.toDTOPageType(componentTemp);
-        } else if (type.equals("template")) {
+        } else if (type.equals("temp")) { // 템플릿 타입
             Template template = templateRepository.findById(modifyDTO.getTemplateId()).get();
 
             componentTemp.setTemplate(template);
             return ComponentTempResponseDTO.toDTOTemplateType(componentTemp);
-        } else {
+        } else if (type.equals("cont")){ // 콘텐츠 타입
             componentTemp.setTitle(modifyDTO.getTitle());
             componentTemp.setContent(modifyDTO.getContent());
             return ComponentTempResponseDTO.toDTO(componentTemp);
+        } else if (type.equals("link")) { // 링크 타입
+            componentTemp.setContent(modifyDTO.getContent());
+            return ComponentTempResponseDTO.toDTO(componentTemp);
         }
-
+        else { // line 타입
+            return ComponentTempResponseDTO.toDTO(componentTemp);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -110,13 +117,11 @@ public class ComponentTempService {
 
         //페이지, 템플릿 타입인 경우 예외처리 추가하기
         String type = componentTemp.getType();
-        if (type.equals("tempalte") || type.equals("page")) {
-            throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTYPE);
+        if (type.equals("temp") || type.equals("page") || type.equals("line")) {
+            throw new ComponentTempException(ErrorCode.CANT_SHOW_COMPENTTEMP);
         }
 
         return ComponentTempResponseDTO.toDTO(componentTemp);
-
-
     }
 
 }

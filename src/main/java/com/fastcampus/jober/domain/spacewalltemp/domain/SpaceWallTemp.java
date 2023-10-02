@@ -1,7 +1,8 @@
-package com.fastcampus.jober.domain.spacewall.domain;
+package com.fastcampus.jober.domain.spacewalltemp.domain;
 
 import com.fastcampus.jober.domain.BaseTimeEntity;
 import com.fastcampus.jober.domain.member.domain.Member;
+import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -28,17 +29,7 @@ public class SpaceWallTemp extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "space_wall_id")
-    private SpaceWall spaceWall;
-
-    @JsonIgnore
-    @JsonBackReference
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "create_member_id")
-    private Member createMember;
-
-    @Column(length = 100)
-    private String url;
+    private SpaceWall spaceWall; // 원본의 spaceWAll을 가리킴
 
     @Column(length = 100)
     private String title;
@@ -51,24 +42,6 @@ public class SpaceWallTemp extends BaseTimeEntity {
 
     @Column(name = "background_image_url", length = 200)
     private String backgroundImageUrl;
-
-    @Column(name = "path_ids", length = 100)
-    private String pathIds;
-
-    @Column(name = "share_url", length = 100)
-    private String shareUrl;
-
-    @Column(name = "share_expired_at")
-    private LocalDateTime shareExpiredAt;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
-
-    @Column
-    private LocalDateTime deletedAt;
 
     @Column(nullable = false)
     private int sequence;

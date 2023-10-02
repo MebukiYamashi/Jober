@@ -39,6 +39,9 @@ public class SpaceWall extends BaseTimeEntity {
     @JoinColumn(name = "create_member_id")
     private Member createMember;
 
+    @Column(name = "parent_space_wall_id")
+    private Long parentSpaceWallId;
+
     @Column(length = 100, unique = true)
     private String url;
 
@@ -64,9 +67,6 @@ public class SpaceWall extends BaseTimeEntity {
     @Column(nullable = false)
     @ColumnDefault("0")
     private int sequence;
-
-    @Column(name = "parent_space_wall_id")
-    private Long parentSpaceWallId;
 
     protected SpaceWall() {
 

@@ -1,20 +1,14 @@
 package com.fastcampus.jober.domain.component.service;
 
 import com.fastcampus.jober.domain.component.domain.Component;
-import com.fastcampus.jober.domain.component.dto.ComponentRequest;
 import com.fastcampus.jober.domain.component.dto.ComponentResponse;
 import com.fastcampus.jober.domain.component.repository.ComponentRepository;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
-import com.fastcampus.jober.domain.spacewall.domain.SpaceWallTemp;
 import com.fastcampus.jober.domain.spacewall.repository.SpaceWallRepository;
-import com.fastcampus.jober.domain.spacewall.repository.SpaceWallTempRepository;
-import com.fastcampus.jober.domain.template.domain.Template;
-import com.fastcampus.jober.domain.template.repository.TemplateRepository;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.error.exception.TemplateException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,25 +38,25 @@ public class ComponentService {
 
         for (int i = 0; i < componentList.size(); i++) {
             Component component = componentList.get(i);
-            if (component.getType().equals("page") && component.getChildSpaceWall() != null) {
+            if (component.getType().equals("page") && component.getThisSpaceWall() != null) {
                 responseDTOList.add(ComponentResponse.ComponentResponseDTO.builder()
                     .id(component.getId())
-                    .spaceWallId(component.getSpaceWall().getId())
-                    .childSpaceWallId(component.getChildSpaceWall().getId())
+                    .spaceWallId(component.getParentSpaceWall().getId())
+                    .childSpaceWallId(component.getThisSpaceWall().getId())
                     .type(component.getType())
                     .visible(component.isVisible())
-                    .title(component.getChildSpaceWall().getTitle())
-                    .content(component.getChildSpaceWall().getDescription())
+                    .title(component.getThisSpaceWall().getTitle())
+                    .content(component.getThisSpaceWall().getDescription())
                     .sequence(component.getSequence())
                     .createdAt(component.getCreatedAt())
                     .updatedAt(component.getUpdatedAt())
                     .build());
 
             }
-            else if (component.getType().equals("template") && component.getTemplate() != null) {
+            else if (component.getType().equals("temp") && component.getTemplate() != null) {
                 responseDTOList.add(ComponentResponse.ComponentResponseDTO.builder()
                     .id(component.getId())
-                    .spaceWallId(component.getSpaceWall().getId())
+                    .spaceWallId(component.getParentSpaceWall().getId())
                     .templateId(component.getTemplate().getId())
                     .type(component.getType())
                     .visible(component.isVisible())
@@ -76,7 +70,7 @@ public class ComponentService {
             else {
                 responseDTOList.add(ComponentResponse.ComponentResponseDTO.builder()
                     .id(component.getId())
-                    .spaceWallId(component.getSpaceWall().getId())
+                    .spaceWallId(component.getParentSpaceWall().getId())
                     .type(component.getType())
                     .visible(component.isVisible())
                     .title(component.getTitle())

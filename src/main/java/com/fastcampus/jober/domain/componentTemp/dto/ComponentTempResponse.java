@@ -15,10 +15,10 @@ public class ComponentTempResponse {
     @AllArgsConstructor
     public static class ComponentTempResponseDTO {
 
-        private Long id;
-        private Long spaceWallTempId;
+        private Long componentTempId;
+        private Long parentSpaceWallTempId;
         private Long templateId;
-        private Long childSpaceWallTempId;
+        private Long thisSpaceWallTempId;
         private Long componentId;
         private String type;
         private boolean visible;
@@ -32,8 +32,8 @@ public class ComponentTempResponse {
 
         public static ComponentTempResponseDTO toDTO(ComponentTemp componentTemp) {
             return ComponentTempResponseDTO.builder()
-                .id(componentTemp.getId())
-                .spaceWallTempId(componentTemp.getSpaceWallTemp().getId())
+                .componentTempId(componentTemp.getId())
+                .parentSpaceWallTempId(componentTemp.getParentSpaceWallTemp().getId())
                 .type(componentTemp.getType())
                 .componentId(componentTemp.getComponentId())
                 .visible(componentTemp.isVisible())
@@ -48,14 +48,14 @@ public class ComponentTempResponse {
 
         public static ComponentTempResponseDTO toDTOPageType(ComponentTemp componentTemp) {
             return ComponentTempResponseDTO.builder()
-                .id(componentTemp.getId())
-                .spaceWallTempId(componentTemp.getSpaceWallTemp().getId())
-                .childSpaceWallTempId(componentTemp.getChildSpaceWall().getId())
+                .componentTempId(componentTemp.getId())
+                .parentSpaceWallTempId(componentTemp.getParentSpaceWallTemp().getId())
+                .thisSpaceWallTempId(componentTemp.getThisSpaceWall().getId())
                 .type(componentTemp.getType())
                 .componentId(componentTemp.getComponentId())
                 .visible(componentTemp.isVisible())
-                .title(componentTemp.getChildSpaceWall().getTitle())
-                .content(componentTemp.getChildSpaceWall().getDescription())
+                .title(componentTemp.getThisSpaceWall().getTitle())
+                .content(componentTemp.getThisSpaceWall().getDescription())
                 .sequence(componentTemp.getSequence())
                 .deleted(componentTemp.isDeleted())
                 .createdAt(componentTemp.getCreatedAt())
@@ -65,8 +65,8 @@ public class ComponentTempResponse {
 
         public static ComponentTempResponseDTO toDTOTemplateType(ComponentTemp componentTemp) {
             return ComponentTempResponseDTO.builder()
-                .id(componentTemp.getId())
-                .spaceWallTempId(componentTemp.getSpaceWallTemp().getId())
+                .componentTempId(componentTemp.getId())
+                .parentSpaceWallTempId(componentTemp.getParentSpaceWallTemp().getId())
                 .templateId(componentTemp.getTemplate().getId())
                 .type(componentTemp.getType())
                 .componentId(componentTemp.getComponentId())

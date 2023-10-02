@@ -1,6 +1,6 @@
-package com.fastcampus.jober.domain.spacewall.repository;
+package com.fastcampus.jober.domain.spacewalltemp.repository;
 
-import com.fastcampus.jober.domain.spacewall.domain.SpaceWallTemp;
+import com.fastcampus.jober.domain.spacewalltemp.domain.SpaceWallTemp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
