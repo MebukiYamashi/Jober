@@ -26,13 +26,13 @@ public class SpaceWallHistoryController {
 
     /**
      * 공유스페이스 및 컴포넌트 히스토리를 저장합니다.
-     * @param historyRequest HistoryRequestDTOWrapper
+     * @param request HistoryRequestDTOWrapper
      * @param spaceWallId 공유스페이스id
      * @return 히스토리에 저장된 데이터
      */
     @PostMapping("/history/{spaceWallId}")
     public ResponseEntity<ResponseDTO<HistoryResponseDTOWrapper>> historyAdd(
-            @RequestBody HistoryRequestDTOWrapper historyRequest,
+            @RequestBody HistoryRequestDTOWrapper request,
             @PathVariable(name = "spaceWallId") Long spaceWallId
     ) {
         if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
@@ -40,7 +40,7 @@ public class SpaceWallHistoryController {
 
         return ResponseEntity
                 .ok(new ResponseDTO<>(
-                        spaceWallHistoryService.addSpaceWallHistory(historyRequest),
+                        spaceWallHistoryService.addSpaceWallHistory(request),
                         "히스토리에 저장됩니다."
                 ));
     }

@@ -9,7 +9,6 @@ import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
 import com.fastcampus.jober.global.auth.jwt.JwtTokenProvider;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
-import com.fastcampus.jober.global.constant.Auths;
 import com.fastcampus.jober.global.error.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.fastcampus.jober.domain.member.dto.MemberResponse.*;
+import static com.fastcampus.jober.domain.member.dto.MemberResponse.MySpaceWallDTO;
 import static com.fastcampus.jober.global.constant.ErrorCode.CHECK_ID;
 
 @Service
@@ -64,11 +63,11 @@ public class MemberService {
     }
 
     @Transactional
-    public JoinDTO join(MemberRequest.JoinDTO joinRequestDTO) {
+    public JoinDTO join(MemberRequest.JoinDTO request) {
 
 //        joinRequestDTO.setPassword(bCryptPasswordEncoder.encode(joinRequestDTO.getPassword()));
 
-        Member userPS = memberRepository.save(joinRequestDTO.toEntity());
+        Member userPS = memberRepository.save(request.toEntity());
 
         JoinDTO response = new JoinDTO(userPS);
         response.setUsername(response.getUsername());
@@ -92,44 +91,38 @@ public class MemberService {
                 (MemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long currentMemberId = memberDetails.getMemberId();
 
-        List<MySpaceWallDTO> mySpaceWallsDTOs = new ArrayList<>();
-        List<Long> spaceWallIdList = new ArrayList<>();
+        List<MySpaceWallDTO> response = new ArrayList<>();
+        List<Long> checkedSpaceWallIdList = new ArrayList<>();
 
         for (SpaceWallMember spaceWallMember : memberRepository.selectMySpaceWallsById(currentMemberId)) {
             SpaceWall mySpaceWall = spaceWallMember.getSpaceWall();
             Long parsedParentSpaceWallId = mySpaceWall.getParentSpaceWallId();
-            // 최상위 공유스페이스인 경우
-            if (parsedParentSpaceWallId == null) {
-                spaceWallIdList.add(mySpaceWall.getId());
-                MySpaceWallDTO mySpaceWallsDTO =
-                        new MySpaceWallDTO(
-                                mySpaceWall.getId(),
-                                mySpaceWall.getTitle(),
-                                spaceWallMember.getAuths()
-                        );
-                mySpaceWallsDTOs.add(mySpaceWallsDTO);
-                continue;
-            }
+
             // 하위 공유스페이스인 경우
-            int count = 0;
-            for (Long Id : spaceWallIdList) { // 내가 속한 공유스페이스 id 모음에서 현재 대상 공유스페이스의 상위페이지 id를 검색함.
-                if (parsedParentSpaceWallId.equals(Id)) {
-                    count++;
+            // 내가 속한 공유스페이스 id 모음에서 현재 대상 공유스페이스의 상위페이지 id를 검색함
+            // 이미 있는 경우 현재 공유스페이스 id를 모음에 넣고, 로직 건너뜀(공유스페이스 조회 목록에 추가하지 않음)
+            if (parsedParentSpaceWallId != null) {
+                int count = 0;
+                for (Long Id : checkedSpaceWallIdList) {
+                    if (parsedParentSpaceWallId.equals(Id)) {
+                        count++;
+                    }
+                }
+                if (count != 0) {
+                    checkedSpaceWallIdList.add(mySpaceWall.getId());
+                    continue;
                 }
             }
-            if (count != 0) { // 이미 있는 경우 현재 공유스페이스 id를 모음에 넣고, 로직 건너뜀(공유스페이스 목록에 추가하지 않음).
-                spaceWallIdList.add(mySpaceWall.getId());
-                continue;
-            }
-            spaceWallIdList.add(mySpaceWall.getId());
+            // 최상위 공유스페이스인 경우
+            checkedSpaceWallIdList.add(mySpaceWall.getId());
             MySpaceWallDTO mySpaceWallsDTO =
                     new MySpaceWallDTO(
                             mySpaceWall.getId(),
                             mySpaceWall.getTitle(),
                             spaceWallMember.getAuths()
                     );
-            mySpaceWallsDTOs.add(mySpaceWallsDTO);
+            response.add(mySpaceWallsDTO);
         }
-        return mySpaceWallsDTOs;
+        return response;
     }
 }

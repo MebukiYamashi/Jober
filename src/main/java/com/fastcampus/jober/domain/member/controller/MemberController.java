@@ -28,30 +28,30 @@ public class MemberController {
 
     /**
      * 회원가입 합니다.
-     * @param joinRequestDTO 회원가입 요청 정보
+     * @param request 회원가입 요청 정보
      * @return 사용자 정보 반환
      */
     @PostMapping("/join")
     public ResponseEntity<ResponseDTO<JoinDTO>> join(
-        @Valid @RequestBody MemberRequest.JoinDTO joinRequestDTO
+        @Valid @RequestBody MemberRequest.JoinDTO request
     ) {
-        if (memberService.checkEmailDuplication(joinRequestDTO.getEmail()))
+        if (memberService.checkEmailDuplication(request.getEmail()))
             throw new MemberException(DUPLICATED_EMAIL);
 
         return ResponseEntity
-                .ok(new ResponseDTO<>(memberService.join(joinRequestDTO), "회원가입에 성공했습니다."));
+                .ok(new ResponseDTO<>(memberService.join(request), "회원가입에 성공했습니다."));
     }
 
     /**
      * 로그인 합니다.
-     * @param loginRequestDTO 로그인 요청 정보
+     * @param request 로그인 요청 정보
      * @return Header(토큰), Body(사용자 정보) 반환
      */
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO<Object>> login(
-        @RequestBody @Valid MemberRequest.LoginDTO loginRequestDTO
+        @RequestBody @Valid MemberRequest.LoginDTO request
     ) {
-        Map<String, Object> response = memberService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+        Map<String, Object> response = memberService.login(request.getEmail(), request.getPassword());
 
         return ResponseEntity
                 .ok()

@@ -59,7 +59,9 @@ public class SpaceWallMemberController {
      * @return 공유스페이스 공동작업자 정보
      */
     @GetMapping("/member/{spaceWallId}")
-    public ResponseEntity<ResponseDTO<List<SpaceWallMemberDTO>>> spaceWallMemberList(@PathVariable Long spaceWallId) {
+    public ResponseEntity<ResponseDTO<List<SpaceWallMemberDTO>>> spaceWallMemberList(
+            @PathVariable Long spaceWallId
+    ) {
         if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
             throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
 

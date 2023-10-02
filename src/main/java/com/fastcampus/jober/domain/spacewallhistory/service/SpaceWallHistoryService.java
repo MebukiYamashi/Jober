@@ -36,12 +36,12 @@ public class SpaceWallHistoryService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public HistoryResponseDTOWrapper addSpaceWallHistory(HistoryRequestDTOWrapper requestDTO) {
+    public HistoryResponseDTOWrapper addSpaceWallHistory(HistoryRequestDTOWrapper request) {
 
         MemberDetails memberDetails =
                 (MemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long currentMemberId = memberDetails.getMemberId();
-        SpaceWallHistoryRequestDTO spaceWallHistoryRequest = requestDTO.getSpaceWallHistoryRequestDTO();
+        SpaceWallHistoryRequestDTO spaceWallHistoryRequest = request.getSpaceWallHistoryRequestDTO();
 
         SpaceWallHistory spaceWallHistory = SpaceWallHistory.builder()
                 .spaceWallId(spaceWallHistoryRequest.getSpaceWallId())
@@ -61,7 +61,7 @@ public class SpaceWallHistoryService {
                 new SpaceWallHistoryResponseDTO(spaceWallHistoryRepository.save(spaceWallHistory));
 
         List<ComponentHistoryResponse.ComponentHistoryResponseDTO> componentHistoriesResponse = new ArrayList<>();
-        for (ComponentHistoryRequestDTO componentHistoryRequest : requestDTO.getComponentHistoryRequestDTOs()) {
+        for (ComponentHistoryRequestDTO componentHistoryRequest : request.getComponentHistoryRequestDTOs()) {
             ComponentHistory componentHistory = ComponentHistory.builder()
                     .templateId(componentHistoryRequest.getTemplateId())
                     .spaceWallHistoryId(spaceWallHistoryResponse.getId())
