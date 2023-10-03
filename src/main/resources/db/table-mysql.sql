@@ -102,6 +102,7 @@ create table space_wall_permission
 create table space_wall_history
 (
     id bigint primary key auto_increment,
+    space_wall_id biginy,
     url varchar(100),
     title varchar(100),
     description varchar(100),
@@ -120,12 +121,13 @@ create table component_history(
     id bigint primary key auto_increment,
     space_wall_history_id bigint not null,
     template_id bigint,
-    child_space_wall_id bigint,
+    this_space_wall_id bigint,
     type varchar(20) not null,
     visible boolean not null,
     title varchar(100),
     content varchar(1000),
     sequence int not null,
+    parent_space_wall_id bigint,
     created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 )engine=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -87,7 +87,7 @@ public class MemberController {
 
     /**
      * 토큰 검사
-     * @param authorization
+     * @param authorization 토큰 정보
      * @return 이상이 없는 경우 true
      */
     @GetMapping("/check-token")

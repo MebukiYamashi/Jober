@@ -1,13 +1,10 @@
 package com.fastcampus.jober.domain.spacewallhistory.service;
 
 import com.fastcampus.jober.domain.componenthistory.domain.ComponentHistory;
-import com.fastcampus.jober.domain.componenthistory.dto.ComponentHistoryRequest;
 import com.fastcampus.jober.domain.componenthistory.dto.ComponentHistoryResponse;
 import com.fastcampus.jober.domain.componenthistory.repository.ComponentHistoryRepository;
 import com.fastcampus.jober.domain.member.repository.MemberRepository;
 import com.fastcampus.jober.domain.spacewallhistory.domain.SpaceWallHistory;
-import com.fastcampus.jober.domain.spacewallhistory.dto.HistoryWrapper;
-import com.fastcampus.jober.domain.spacewallhistory.dto.SpaceWallHistoryRequest;
 import com.fastcampus.jober.domain.spacewallhistory.repository.SpaceWallHistoryRepository;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
 import com.fastcampus.jober.global.error.exception.SpaceWallBadRequestException;
@@ -65,13 +62,13 @@ public class SpaceWallHistoryService {
             ComponentHistory componentHistory = ComponentHistory.builder()
                     .templateId(componentHistoryRequest.getTemplateId())
                     .spaceWallHistoryId(spaceWallHistoryResponse.getId())
-                    .childSpaceWallId(componentHistoryRequest.getChildSpaceWallId())
+                    .thisSpaceWallId(componentHistoryRequest.getThisSpaceWallId())
                     .type(componentHistoryRequest.getType())
                     .visible(componentHistoryRequest.isVisible())
                     .title(componentHistoryRequest.getTitle())
                     .content(componentHistoryRequest.getContent())
                     .sequence(componentHistoryRequest.getSequence())
-                    .spaceWallId(componentHistoryRequest.getSpaceWallId())
+                    .parentSpaceWallId(componentHistoryRequest.getParentSpaceWallId())
                     .build();
 
             componentHistoriesResponse.add(

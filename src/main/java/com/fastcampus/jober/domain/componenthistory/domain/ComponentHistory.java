@@ -22,7 +22,7 @@ public class ComponentHistory extends BaseTimeEntity {
 
     private Long spaceWallHistoryId;
 
-    private Long childSpaceWallId;
+    private Long thisSpaceWallId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
@@ -40,6 +40,6 @@ public class ComponentHistory extends BaseTimeEntity {
     @Column(nullable = false)
     private int sequence;
 
-    private Long spaceWallId;
+    private Long parentSpaceWallId;
 
 }

@@ -7,6 +7,7 @@ import com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberRequest;
 import com.fastcampus.jober.domain.spacewallmember.dto.SpaceWallMemberResponse;
 import com.fastcampus.jober.domain.spacewallmember.repository.SpaceWallMemberRepository;
 import com.fastcampus.jober.domain.spacewallpermission.repository.SpaceWallPermissionRepository;
+import com.fastcampus.jober.global.auth.jwt.JwtTokenProvider;
 import com.fastcampus.jober.global.auth.session.MemberDetails;
 import com.fastcampus.jober.global.error.exception.SpaceWallMemberException;
 import lombok.RequiredArgsConstructor;

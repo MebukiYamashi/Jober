@@ -14,9 +14,9 @@ public class ComponentHistoryResponse {
         private Long id;
         private Long templateId;
         private Long spaceWallHistoryId;
-        private Long childSpaceWallId;
+        private Long thisSpaceWallId;
         private Type type;
-        private Long spaceWallId;
+        private Long parentSpaceWallId;
         private boolean visible;
         private String title;
         private String content;
@@ -26,9 +26,9 @@ public class ComponentHistoryResponse {
             this.id = componentHistory.getId();
             this.templateId = componentHistory.getTemplateId();
             this.spaceWallHistoryId = componentHistory.getSpaceWallHistoryId();
-            this.childSpaceWallId = componentHistory.getChildSpaceWallId();
+            this.thisSpaceWallId = componentHistory.getThisSpaceWallId();
             this.type = componentHistory.getType();
-            this.spaceWallId = componentHistory.getSpaceWallId();
+            this.parentSpaceWallId = componentHistory.getParentSpaceWallId();
             this.visible = componentHistory.isVisible();
             this.title = componentHistory.getTitle();
             this.content = componentHistory.getContent();
