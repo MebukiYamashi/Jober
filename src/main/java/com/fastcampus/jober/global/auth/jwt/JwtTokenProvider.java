@@ -24,7 +24,7 @@ import static com.fastcampus.jober.global.constant.ErrorCode.*;
 @Component
 public class JwtTokenProvider {
 
-    public static final Long EXP = 1000L * 60 * 60; // 1시간
+    public static final Long EXP = 1000L * 60 * 60 * 24; // 1시간
     public static final String TOKEN_PREFIX = "Bearer "; // 스페이스 필요함
     public static final String HEADER = "Authorization";
     public static String SECRET;
