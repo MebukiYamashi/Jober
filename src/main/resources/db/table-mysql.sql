@@ -73,7 +73,7 @@ create table component
     type                 varchar(20) not null,
     visible              boolean     not null,
     title                varchar(100),
-    content              varchar(1000),
+    content              varchar(16000),
     sequence             int         not null,
     created_at           datetime    not null DEFAULT CURRENT_TIMESTAMP,
     updated_at           datetime             DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -131,7 +131,7 @@ create table component_history
     type                  varchar(20) not null,
     visible               boolean     not null,
     title                 varchar(100),
-    content               varchar(1000),
+    content               varchar(16000),
     sequence              int         not null,
     parent_space_wall_id  bigint,
     created_at            datetime    not null DEFAULT CURRENT_TIMESTAMP,
@@ -155,19 +155,20 @@ create table space_wall_temp
 create table component_temp
 (
     id                        bigint primary key auto_increment,
-    parent_space_wall_temp_id bigint      not null,
+    parent_space_wall_temp_id bigint,
     this_space_wall_id        bigint,
     template_id               bigint,
     component_id              bigint,
     type                      varchar(20) not null,
     visible                   boolean     not null,
     title                     varchar(100),
-    content                   varchar(1000),
+    content                   varchar(16000),
     sequence                  int         not null,
     deleted                   boolean,
     created_at                datetime    not null DEFAULT CURRENT_TIMESTAMP,
     updated_at                datetime             DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    foreign key (parent_space_wall_temp_id) references space_wall_temp (id),
+--     foreign key (parent_space_wall_temp_id) references space_wall_temp (id),
     foreign key (this_space_wall_id) references space_wall (id),
     foreign key (template_id) references template (id)
 )engine=InnoDB DEFAULT CHARSET=utf8mb4;
+alter table component_temp add foreign key(parent_space_wall_temp_id) references space_wall_temp(id);

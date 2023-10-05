@@ -66,10 +66,14 @@ public class ComponentTempController {
 
     @GetMapping("/view/{spaceWallId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempDetails(
-        @PathVariable("componentTempId") Long componentTempId,
+        @PathVariable("spaceWallId") Long spaceWallId,
         @RequestBody ModifyDTO modifyDTO) {
 
-        if (!componentTempService.checkComponentTempExists(componentTempId)) {
+        System.out.println("컴포넌트 템프 조회");
+        System.out.println(spaceWallId);
+        System.out.println(modifyDTO.getComponentTempId());
+
+        if (!componentTempService.checkComponentTempExists(modifyDTO.getComponentTempId())) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTEMPID);
         }
 
