@@ -47,6 +47,12 @@ public class CustomAuthorizationManager implements
         return new AuthorizationDecision(access);
     }
 
+    @Override
+    public void verify(Supplier<Authentication> authentication,
+        RequestAuthorizationContext object) {
+        AuthorizationManager.super.verify(authentication, object);
+    }
+
     private Long parseSpaceWallId(String requestUri) throws NumberFormatException {
         String[] array = requestUri.split("/");
 

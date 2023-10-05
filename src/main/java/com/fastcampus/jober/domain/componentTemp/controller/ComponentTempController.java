@@ -47,12 +47,12 @@ public class ComponentTempController {
         );
     }
 
-    @PutMapping("/edit/{componentTempId}")
+    @PutMapping("/edit/{spaceWallId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempModify(
-        @PathVariable("componentTempId") Long componentTempId,
+        @PathVariable("spaceWallId") Long spaceWallId,
         @RequestBody ComponentTempRequest.ModifyDTO modifyDTO) {
 
-        if (!componentTempService.checkComponentTempExists(componentTempId)) {
+        if (!componentTempService.checkComponentTempExists(modifyDTO.getComponentTempId())) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTEMPID);
         }
         ComponentTempResponseDTO componentTempResponseDTO = componentTempService.modifyComponentTemp(
@@ -64,16 +64,17 @@ public class ComponentTempController {
         );
     }
 
-    @GetMapping("/view/{componentTempId}")
+    @GetMapping("/view/{spaceWallId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempDetails(
-        @PathVariable("componentTempId") Long componentTempId) {
+        @PathVariable("componentTempId") Long componentTempId,
+        @RequestBody ComponentTempRequest.ModifyDTO modifyDTO) {
 
         if (!componentTempService.checkComponentTempExists(componentTempId)) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTEMPID);
         }
 
         ComponentTempResponseDTO componentTempResponseDTO = componentTempService.findComponentTemp(
-            componentTempId);
+            modifyDTO.getComponentTempId());
 
         return new ResponseEntity<>(
             new ResponseDTO<>(HttpStatus.OK, "임시 컴포넌트가 조회 되었습니다.", componentTempResponseDTO),

@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -93,6 +94,8 @@ public class SecurityConfig {
 
         // 6. 로그인 인증창이 뜨지 않게 비활성화
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        http.anonymous(AnonymousConfigurer::disable);
 
         // 6-1. 로그아웃 url 지정 및 로그아웃 후 리다이렉트 url 지정
 //        http.logout(c -> c.logoutUrl("/logout").addLogoutHandler(logoutHandler)
