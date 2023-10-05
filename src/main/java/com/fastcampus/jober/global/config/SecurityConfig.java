@@ -138,7 +138,7 @@ public class SecurityConfig {
             authorize
                 .requestMatchers(
                     new AntPathRequestMatcher("/my-spaces"),
-                    new AntPathRequestMatcher("new-spaces"),
+                    new AntPathRequestMatcher("/new-spaces"),
                     new AntPathRequestMatcher("/check-token"),
                     new AntPathRequestMatcher("/check-email/**"),
                     new AntPathRequestMatcher("/templates/**"),
