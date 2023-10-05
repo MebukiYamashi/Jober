@@ -6,6 +6,7 @@ import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_USER;
 import com.fastcampus.jober.global.auth.jwt.JwtAuthenticationFilter;
 import com.fastcampus.jober.global.auth.jwt.JwtExceptionFilter;
 import com.fastcampus.jober.global.error.exception.TokenException;
+import com.fastcampus.jober.global.security.filter.MyRequestFilter;
 import com.fastcampus.jober.global.security.manager.CustomAuthorizationManager;
 import com.fastcampus.jober.global.utils.FilterResponseUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,6 +36,7 @@ public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
     private final CustomAuthorizationManager customAuthorizationManager;
+    private final MyRequestFilter requestFilter;
 
 //    @Bean
 //    BCryptPasswordEncoder passwordEncoder() {
@@ -138,7 +141,6 @@ public class SecurityConfig {
             authorize
                 .requestMatchers(
                     new AntPathRequestMatcher("/my-spaces"),
-                    new AntPathRequestMatcher("/new-spaces"),
                     new AntPathRequestMatcher("/check-token"),
                     new AntPathRequestMatcher("/check-email/**"),
                     new AntPathRequestMatcher("/templates/**"),
@@ -150,6 +152,8 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest().access(customAuthorizationManager);
         });
+
+        http.addFilterBefore(requestFilter, AuthorizationFilter.class);
         return http.build();
     }
 

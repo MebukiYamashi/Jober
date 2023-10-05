@@ -95,13 +95,13 @@ create table space_wall_member
 
 create table space_wall_permission
 (
-    id                   bigint primary key auto_increment,
-    space_wall_member_id bigint   not null,
-    auths                varchar(20)       default 'VIEWER',
-    parent_id            bigint,
-    created_at           datetime not null DEFAULT CURRENT_TIMESTAMP,
-    updated_at           datetime          DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    foreign key (space_wall_member_id) references space_wall_member (id)
+    id bigint primary key auto_increment,
+    space_wall_member_id bigint not null,
+    auths varchar(20) default 'VIEWER',
+    parent_id bigint,
+    created_at datetime not null DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    foreign key(space_wall_member_id) references space_wall_member(id) on delete CASCADE
 )engine=InnoDB DEFAULT CHARSET=utf8mb4;
 
 create table space_wall_history

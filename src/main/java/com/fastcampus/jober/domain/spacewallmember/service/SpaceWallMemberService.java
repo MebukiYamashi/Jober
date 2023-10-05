@@ -98,14 +98,14 @@ public class SpaceWallMemberService {
         return response;
     }
 
-    @Transactional
+    // SpaceWallMemberService.saveSpaceWallMember()에서 사용합니다.
     public void removeAllSpaceWallMembers(Long spaceWallId, List<String> emails) {
         for (String email : emails) {
             spaceWallMemberRepository.deleteAllSpaceWallMemberByEmail(spaceWallId, email);
         }
     }
 
-    @Transactional
+    // SpaceWallMemberService.saveSpaceWallMember()에서 사용합니다.
     public List<String> findAllEmailsNotInRequest(
             Long spaceWallId,
             List<AssignDTO> requests
