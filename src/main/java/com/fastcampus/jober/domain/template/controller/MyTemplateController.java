@@ -2,7 +2,7 @@ package com.fastcampus.jober.domain.template.controller;
 
 import com.fastcampus.jober.domain.template.dto.TemplateResponseDto.ListDto;
 import com.fastcampus.jober.domain.template.service.MyTemplateService;
-import com.fastcampus.jober.global.auth.session.MemberDetails;
+import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

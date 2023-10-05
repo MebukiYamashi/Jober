@@ -2,7 +2,7 @@ package com.fastcampus.jober.domain.member.repository;
 
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.member.dto.MemberResponse;
-import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.space.spacewall.spacewallmember.domain.SpaceWallMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

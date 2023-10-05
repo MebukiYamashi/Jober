@@ -1,11 +1,11 @@
 package com.fastcampus.jober.global.security.manager;
 
-import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
-import com.fastcampus.jober.domain.spacewall.repository.SpaceWallRepository;
-import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
-import com.fastcampus.jober.domain.spacewallmember.repository.SpaceWallMemberRepository;
-import com.fastcampus.jober.domain.spacewallpermission.repository.SpaceWallPermissionRepository;
-import com.fastcampus.jober.global.auth.session.MemberDetails;
+import com.fastcampus.jober.domain.space.spacewall.domain.SpaceWall;
+import com.fastcampus.jober.domain.space.spacewall.repository.SpaceWallRepository;
+import com.fastcampus.jober.domain.space.spacewall.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.space.spacewall.spacewallmember.repository.SpaceWallMemberRepository;
+import com.fastcampus.jober.domain.space.spacewall.spacewallpermission.repository.SpaceWallPermissionRepository;
+import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import com.fastcampus.jober.global.constant.Auths;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
 import io.micrometer.common.util.StringUtils;

@@ -1,8 +1,8 @@
 package com.fastcampus.jober.domain.member.domain;
 
 import com.fastcampus.jober.domain.BaseTimeEntity;
-import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
-import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.space.spacewall.domain.SpaceWall;
+import com.fastcampus.jober.domain.space.spacewall.spacewallmember.domain.SpaceWallMember;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;

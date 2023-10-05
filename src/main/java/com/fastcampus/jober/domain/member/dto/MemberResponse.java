@@ -1,7 +1,7 @@
 package com.fastcampus.jober.domain.member.dto;
 
 import com.fastcampus.jober.domain.member.domain.Member;
-import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.space.spacewall.spacewallmember.domain.SpaceWallMember;
 import com.fastcampus.jober.global.constant.Auths;
 import lombok.*;
 

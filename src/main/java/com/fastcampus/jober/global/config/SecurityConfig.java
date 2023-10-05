@@ -3,8 +3,8 @@ package com.fastcampus.jober.global.config;
 import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_AUTHENTICATION;
 import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_USER;
 
-import com.fastcampus.jober.global.auth.jwt.JwtAuthenticationFilter;
-import com.fastcampus.jober.global.auth.jwt.JwtExceptionFilter;
+import com.fastcampus.jober.global.security.auth.jwt.JwtAuthenticationFilter;
+import com.fastcampus.jober.global.security.auth.jwt.JwtExceptionFilter;
 import com.fastcampus.jober.global.error.exception.TokenException;
 import com.fastcampus.jober.global.security.filter.MyRequestFilter;
 import com.fastcampus.jober.global.security.manager.CustomAuthorizationManager;

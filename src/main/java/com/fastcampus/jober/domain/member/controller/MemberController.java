@@ -2,7 +2,7 @@ package com.fastcampus.jober.domain.member.controller;
 
 import com.fastcampus.jober.domain.member.dto.MemberRequest;
 import com.fastcampus.jober.domain.member.service.MemberService;
-import com.fastcampus.jober.global.auth.jwt.JwtTokenProvider;
+import com.fastcampus.jober.global.security.auth.jwt.JwtTokenProvider;
 import com.fastcampus.jober.global.error.exception.MemberException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import jakarta.validation.Valid;

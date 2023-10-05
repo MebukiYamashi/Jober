@@ -22,8 +22,8 @@ public class TemplateUsedHistoryService {
     private final TemplateRepository templateRepository;
 
     @Transactional
-    public void saveHistory(String email, Long templateId) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(
+    public void saveHistory(Long memberId, Long templateId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(
             ErrorCode.MEMBER_NOT_FOUND));
 
         Template template = templateRepository.findById(templateId)
