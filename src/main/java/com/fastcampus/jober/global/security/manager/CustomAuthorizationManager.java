@@ -100,7 +100,8 @@ public class CustomAuthorizationManager implements
             jsonParser = new JSONParser(request.getInputStream());
             LinkedHashMap<String, Object> jsonObject = jsonParser.parseObject();
 
-            if (StringUtils.isBlank(jsonObject.get("parentSpaceWallId").toString())) {
+            if (jsonObject.get("parentSpaceWallId") == null || StringUtils.isBlank(
+                jsonObject.get("parentSpaceWallId").toString())) {
                 return true;
             }
 
