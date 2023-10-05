@@ -42,7 +42,8 @@ public class ComponentTempService {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENT_TYPE);
         }
 
-        SpaceWallTemp parentSpaceWallTemp = spaceWallTempRepository.findById(addDTO.getParentSpaceWallTempId()).get(); // 예외처리
+        SpaceWallTemp parentSpaceWallTemp = spaceWallTempRepository.findSpaceWallTempBySpaceWallId(
+            addDTO.getSpaceWallId());
 
         ComponentTemp componentTemp = ComponentTemp.builder()
             .parentSpaceWallTemp(parentSpaceWallTemp)
@@ -94,10 +95,10 @@ public class ComponentTempService {
             componentTemp.setTemplate(template);
             return ComponentTempResponseDTO.toDTOTemplateType(componentTemp);
         } else if (type.equals("cont")){ // 콘텐츠 타입
-            componentTemp.setTitle(modifyDTO.getTitle());
             componentTemp.setContent(modifyDTO.getContent());
             return ComponentTempResponseDTO.toDTO(componentTemp);
         } else if (type.equals("link")) { // 링크 타입
+            componentTemp.setTitle(modifyDTO.getTitle());
             componentTemp.setContent(modifyDTO.getContent());
             return ComponentTempResponseDTO.toDTO(componentTemp);
         }

@@ -3,10 +3,12 @@ package com.fastcampus.jober.domain.spacewall.domain;
 import com.fastcampus.jober.domain.BaseTimeEntity;
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.spacewallmember.domain.SpaceWallMember;
+import com.fastcampus.jober.domain.spacewalltemp.domain.SpaceWallTemp;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -92,6 +94,21 @@ public class SpaceWall extends BaseTimeEntity {
             this.pathIds = updatedSpaceWall.getPathIds();
         }
         this.authorized = updatedSpaceWall.isAuthorized();
+    }
+
+    public void updateBySWT(SpaceWallTemp spaceWallTemp) {
+        if (!Objects.equals(this.title, spaceWallTemp.getTitle())) {
+            this.title = spaceWallTemp.getTitle();
+        }
+        if (!Objects.equals(this.description, spaceWallTemp.getDescription())) {
+            this.description = spaceWallTemp.getDescription();
+        }
+        if (!Objects.equals(this.profileImageUrl, spaceWallTemp.getProfileImageUrl())) {
+            this.profileImageUrl = spaceWallTemp.getProfileImageUrl();
+        }
+        if (this.backgroundImageUrl != spaceWallTemp.getBackgroundImageUrl()) {
+            this.backgroundImageUrl = spaceWallTemp.getBackgroundImageUrl();
+        }
     }
 
     public void setSequence(int sequence) {

@@ -3,6 +3,7 @@ package com.fastcampus.jober.domain.spacewalltemp.domain;
 import com.fastcampus.jober.domain.BaseTimeEntity;
 import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
+import com.fastcampus.jober.domain.spacewalltemp.dto.SpaceWallTempRequest.ModifyDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -46,7 +47,35 @@ public class SpaceWallTemp extends BaseTimeEntity {
     @Column(nullable = false)
     private int sequence;
 
-    protected SpaceWallTemp() {
+    public SpaceWallTemp() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "SpaceWallTemp{" +
+            "id=" + id +
+            ", spaceWall=" + spaceWall.getId() +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", profileImageUrl='" + profileImageUrl + '\'' +
+            ", backgroundImageUrl='" + backgroundImageUrl + '\'' +
+            ", sequence=" + sequence +
+            '}';
+    }
+
+    public void update(ModifyDTO modifyDTO) {
+        if (this.title != modifyDTO.getTitle()) {
+            this.title = modifyDTO.getTitle();
+        }
+        if (this.description != modifyDTO.getDescription()) {
+            this.description = modifyDTO.getDescription();
+        }
+        if (this.profileImageUrl != modifyDTO.getProfileImageUrl()) {
+            this.profileImageUrl = modifyDTO.getProfileImageUrl();
+        }
+        if (this.backgroundImageUrl != modifyDTO.getBackgroundImageUrl()) {
+            this.backgroundImageUrl = modifyDTO.getProfileImageUrl();
+        }
     }
 }

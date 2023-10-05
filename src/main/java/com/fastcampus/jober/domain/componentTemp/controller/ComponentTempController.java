@@ -33,8 +33,9 @@ public class ComponentTempController {
      * @param addDTO
      * @return ComponentTempResponseDTO
      */
-    @PostMapping("/new")
+    @PostMapping("/new/{spaceWallId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponse.ComponentTempResponseDTO>> componentTempAdd(
+        @PathVariable("spaceWallId") Long spaceWallId,
         @RequestBody ComponentTempRequest.AddDTO addDTO) {
 
         ComponentTempResponse.ComponentTempResponseDTO componentTempResponseDTO = componentTempService.addComponentTemp(
@@ -46,7 +47,7 @@ public class ComponentTempController {
         );
     }
 
-    @PutMapping("/{componentTempId}")
+    @PutMapping("/edit/{componentTempId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempModify(
         @PathVariable("componentTempId") Long componentTempId,
         @RequestBody ComponentTempRequest.ModifyDTO modifyDTO) {
@@ -63,9 +64,9 @@ public class ComponentTempController {
         );
     }
 
-    @GetMapping("/{componentTempId}")
+    @GetMapping("/view/{componentTempId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempDetails(
-        @PathVariable("componentTempId") Long componentTempId){
+        @PathVariable("componentTempId") Long componentTempId) {
 
         if (!componentTempService.checkComponentTempExists(componentTempId)) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTEMPID);

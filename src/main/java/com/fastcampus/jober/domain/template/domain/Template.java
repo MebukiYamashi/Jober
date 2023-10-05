@@ -26,9 +26,9 @@ public class Template extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "type_id")
-    private TemplateType templateType;
+//    @ManyToOne
+//    @JoinColumn(name = "type_id")
+//    private TemplateType templateType;
 
     @Column(nullable = false, length = 30)
     private String title;

@@ -1,7 +1,10 @@
 package com.fastcampus.jober.domain.componentTemp.dto;
 
+import com.fastcampus.jober.domain.component.domain.Component;
 import com.fastcampus.jober.domain.componentTemp.domain.ComponentTemp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +21,7 @@ public class ComponentTempResponse {
         private Long componentTempId;
         private Long parentSpaceWallTempId;
         private Long templateId;
-        private Long thisSpaceWallTempId;
+        private Long thisSpaceWallId;
         private Long componentId;
         private String type;
         private boolean visible;
@@ -50,7 +53,7 @@ public class ComponentTempResponse {
             return ComponentTempResponseDTO.builder()
                 .componentTempId(componentTemp.getId())
                 .parentSpaceWallTempId(componentTemp.getParentSpaceWallTemp().getId())
-                .thisSpaceWallTempId(componentTemp.getThisSpaceWall().getId())
+                .thisSpaceWallId(componentTemp.getThisSpaceWall().getId())
                 .type(componentTemp.getType())
                 .componentId(componentTemp.getComponentId())
                 .visible(componentTemp.isVisible())
@@ -79,11 +82,27 @@ public class ComponentTempResponse {
                 .updatedAt(componentTemp.getUpdatedAt())
                 .build();
         }
+
+        public static List<ComponentTempResponseDTO> listToDTO(
+            List<ComponentTemp> componentTempList) {
+            List<ComponentTempResponseDTO> componentTempResponseDTOList = new ArrayList<>();
+
+            for (int i = 0; i < componentTempList.size(); i++) {
+                ComponentTemp componentTemp = componentTempList.get(i);
+
+                if (componentTemp.getType().equals("page")
+                    && componentTemp.getThisSpaceWall() != null) {
+                    componentTempResponseDTOList.add(toDTOPageType(componentTemp));
+                } else if (componentTemp.getType().equals("temp")
+                    && componentTemp.getTemplate() != null) {
+                    componentTempResponseDTOList.add(toDTOTemplateType(componentTemp));
+                } else {
+                    componentTempResponseDTOList.add(toDTO(componentTemp));
+                }
+            }
+            return componentTempResponseDTOList;
+        }
+
     }
-
-
-
-
-
 
 }

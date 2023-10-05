@@ -44,7 +44,10 @@ public enum ErrorCode {
     INVALID_COMPONENT_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 type입니다"),
     INVALID_COMPONENTTEMPID(HttpStatus.BAD_REQUEST, "유효하지 않은 componentTempId입니다"),
     DTO_NOT_EXISTS(HttpStatus.BAD_REQUEST, "DTO가 넘어오지 않았습니다."),
-    CANT_SHOW_COMPENTTEMP(HttpStatus.BAD_REQUEST, "조회 불가능한 타입입니다.")
+    CANT_SHOW_COMPENTTEMP(HttpStatus.BAD_REQUEST, "조회 불가능한 타입입니다."),
+    INVALID_SPACEWALLID(HttpStatus.BAD_REQUEST, "유효하지 않은 spaceWallId값입니다"),
+    ALREADY_EXSIST_SPACEWALLTEMP(HttpStatus.BAD_REQUEST, "편집 중이던 SpaceWallTemp가 존재합니다."),
+    NOT_EXSIST_SPACEWALLTEMP(HttpStatus.BAD_REQUEST, "편집 중이던 SpaceWallTemp가 존재하지 않습니다.")
     ;
 
     private final HttpStatus httpStatus;

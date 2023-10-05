@@ -1,6 +1,7 @@
 package com.fastcampus.jober.domain.componentTemp.domain;
 
 import com.fastcampus.jober.domain.BaseTimeEntity;
+import com.fastcampus.jober.domain.componentTemp.dto.ComponentTempRequest.ModifyDTOInSWT;
 import com.fastcampus.jober.domain.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.spacewalltemp.domain.SpaceWallTemp;
 import com.fastcampus.jober.domain.template.domain.Template;
@@ -96,7 +97,12 @@ public class ComponentTemp extends BaseTimeEntity {
         this.sequence = sequence;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void updateInSWT(ModifyDTOInSWT modifyDTOInSWT) {
+        if (this.sequence != modifyDTOInSWT.getSequence()) {
+            this.sequence = modifyDTOInSWT.getSequence();
+        }
+        if (this.visible != modifyDTOInSWT.isVisible()) {
+            this.visible = modifyDTOInSWT.isVisible();
+        }
     }
 }

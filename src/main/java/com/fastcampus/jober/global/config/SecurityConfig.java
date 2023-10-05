@@ -1,8 +1,12 @@
 package com.fastcampus.jober.global.config;
 
+import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_AUTHENTICATION;
+import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_USER;
+
 import com.fastcampus.jober.global.auth.jwt.JwtAuthenticationFilter;
 import com.fastcampus.jober.global.auth.jwt.JwtExceptionFilter;
 import com.fastcampus.jober.global.error.exception.TokenException;
+import com.fastcampus.jober.global.security.manager.CustomAuthorizationManager;
 import com.fastcampus.jober.global.utils.FilterResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +26,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_AUTHENTICATION;
-import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_USER;
-
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -32,6 +33,7 @@ import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_USER;
 public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final CustomAuthorizationManager customAuthorizationManager;
 
 //    @Bean
 //    BCryptPasswordEncoder passwordEncoder() {
@@ -52,12 +54,14 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+    public class CustomSecurityFilterManager extends
+        AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
         @Override
         public void configure(HttpSecurity builder) throws Exception {
 
-            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            AuthenticationManager authenticationManager = builder.getSharedObject(
+                AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
             super.configure(builder);
         }
@@ -97,43 +101,55 @@ public class SecurityConfig {
 
         // 8. 인증 실패 처리
         http.exceptionHandling(
-                c -> c.authenticationEntryPoint((request, response, authException) -> {
-                    log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : " + authException.getMessage());
-                    FilterResponseUtils.setErrorResponse(
-                            INVALID_AUTHENTICATION.getHttpStatus(),
-                            response,
-                            new TokenException(INVALID_AUTHENTICATION)
-                    );
-                }));
+            c -> c.authenticationEntryPoint((request, response, authException) -> {
+                log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : " + authException.getMessage());
+                FilterResponseUtils.setErrorResponse(
+                    INVALID_AUTHENTICATION.getHttpStatus(),
+                    response,
+                    new TokenException(INVALID_AUTHENTICATION)
+                );
+            }));
 
         // 9. 권한 실패 처리
         http.exceptionHandling(
-                c -> c.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : " + accessDeniedException.getMessage());
-                    FilterResponseUtils.setErrorResponse(
-                            INVALID_USER.getHttpStatus(),
-                            response,
-                            new TokenException(INVALID_USER)
-                    );
-                }));
+            c -> c.accessDeniedHandler((request, response, accessDeniedException) -> {
+                log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : " + accessDeniedException.getMessage());
+                FilterResponseUtils.setErrorResponse(
+                    INVALID_USER.getHttpStatus(),
+                    response,
+                    new TokenException(INVALID_USER)
+                );
+            }));
 
         // 11. 인증, 권한 필터 설정
-        http.authorizeRequests(
-                authorize -> {
-                    authorize
-                            .requestMatchers(
-                                    new AntPathRequestMatcher("/my-spaces"),
-                                    new AntPathRequestMatcher("/new-spaces"),
-                                    new AntPathRequestMatcher("/check-token"),
-                                    new AntPathRequestMatcher("/check-email/**")
-                            )
-                            .access("isAuthenticated()")
-                            .requestMatchers(new AntPathRequestMatcher("/spaces/history/**"))
-                            .access("isAuthenticated() and hasAnyAuthority('EDITOR', 'OWNER')")
-                            .requestMatchers(new AntPathRequestMatcher("/spaces/member/**"))
-                            .access("isAuthenticated() and hasAnyAuthority('OWNER')")
-                            .anyRequest().permitAll();
-                });
+//        http.authorizeRequests(
+//            authorize -> {
+//                authorize
+//                    .requestMatchers(
+//                        new AntPathRequestMatcher("/my-spaces"),
+//                        new AntPathRequestMatcher("/new-spaces"),
+//                        new AntPathRequestMatcher("/check-token"),
+//                        new AntPathRequestMatcher("/check-email/**")
+//                    )
+//                    .access("isAuthenticated()")
+//                    .requestMatchers(new AntPathRequestMatcher("/spaces/**"))
+//            });
+        http.authorizeHttpRequests(authorize -> {
+            authorize
+                .requestMatchers(
+                    new AntPathRequestMatcher("/my-spaces"),
+                    new AntPathRequestMatcher("new-spaces"),
+                    new AntPathRequestMatcher("/check-token"),
+                    new AntPathRequestMatcher("/check-email/**"),
+                    new AntPathRequestMatcher("/templates/**"),
+                    new AntPathRequestMatcher("/my-templates/**"))
+                .authenticated()
+                .requestMatchers(
+                    new AntPathRequestMatcher("/login"),
+                    new AntPathRequestMatcher("/join"))
+                .permitAll()
+                .anyRequest().access(customAuthorizationManager);
+        });
         return http.build();
     }
 
