@@ -52,16 +52,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 .id(JwtTokenProvider.getMemberIdFromToken(jwt))
                 .build();
 
-        Long parsedId = null;
-        if (request.getRequestURI().split("/")[1].equals("spaces"))
-            // localhost:8080[0]/spaces[1]/{space_wall_id}[2] parsing
-            parsedId = Long.parseLong(request.getRequestURI().split("/")[3]);
-
-        MemberDetails memberDetails = new MemberDetails(
-                member,
-                parsedId,
-                JwtTokenProvider.getAssignedSpaceWallMemberIdsFromToken(jwt)
-        );
+        MemberDetails memberDetails = new MemberDetails(member);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(

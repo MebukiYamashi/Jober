@@ -1,9 +1,6 @@
 package com.fastcampus.jober.global.error.advice;
 
 import com.fastcampus.jober.global.error.exception.DomainException;
-import com.fastcampus.jober.global.error.exception.Exception401;
-import com.fastcampus.jober.global.error.exception.Exception403;
-import com.fastcampus.jober.global.error.exception.Exception500;
 import com.fastcampus.jober.global.error.exception.ExceptionValid;
 import com.fastcampus.jober.global.error.exception.TokenException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
@@ -20,22 +17,6 @@ import org.springframework.web.server.MethodNotAllowedException;
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class MyExceptionAdvice {
-
-    @ExceptionHandler(Exception401.class)
-    public ResponseEntity<?> unAuthorized(Exception401 e) {
-        return new ResponseEntity<>(e.body(), e.status());
-    }
-
-    @ExceptionHandler(Exception403.class)
-    public ResponseEntity<?> forbidden(Exception403 e) {
-        return new ResponseEntity<>(e.body(), e.status());
-    }
-
-    @ExceptionHandler(Exception500.class)
-    public ResponseEntity<?> serverError(Exception500 e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.body(), e.status());
-    }
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<?> handleDomainException(DomainException e) {

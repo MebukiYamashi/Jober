@@ -9,15 +9,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.fastcampus.jober.domain.member.dto.MemberResponse.PermissionMappedDTO;
 import static com.fastcampus.jober.global.constant.ErrorCode.*;
 
 @Slf4j
@@ -78,17 +79,11 @@ public class JwtTokenProvider {
                 .getBody().getExpiration().before(new Date());
     }
 
-    public static String create(Member member, List<PermissionMappedDTO> permissionDTOs) {
-
-        Map<Long, Auths> spaceWallMemberInfos = new HashMap<>();
-        for (PermissionMappedDTO permissionMappedDTO : permissionDTOs) {
-            spaceWallMemberInfos.put(permissionMappedDTO.getSpaceWallId(), permissionMappedDTO.getAuths());
-        }
+    public static String create(Member member) {
 
         Claims claims = Jwts.claims();
         claims.put("id", member.getId());
         claims.put("email", member.getEmail());
-        claims.put("assignedSpaceMemberInfos", convertObjectListToJson(spaceWallMemberInfos));
 
         String jwt = Jwts.builder()
             .setClaims(claims)

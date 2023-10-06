@@ -51,7 +51,7 @@ public class MemberService {
         Member loginUser = memberDetails.getMember();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("token", JwtTokenProvider.create(loginUser, memberRepository.findAuthsByEmail(email)));
+        response.put("token", JwtTokenProvider.create(loginUser));
         response.put("memberInfo", new MemberDTO(loginUser));
 
         return response;

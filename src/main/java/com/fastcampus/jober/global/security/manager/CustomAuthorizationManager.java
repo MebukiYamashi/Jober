@@ -5,14 +5,12 @@ import com.fastcampus.jober.domain.space.spacewall.repository.SpaceWallRepositor
 import com.fastcampus.jober.domain.space.spacewall.spacewallmember.domain.SpaceWallMember;
 import com.fastcampus.jober.domain.space.spacewall.spacewallmember.repository.SpaceWallMemberRepository;
 import com.fastcampus.jober.domain.space.spacewall.spacewallpermission.repository.SpaceWallPermissionRepository;
-import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import com.fastcampus.jober.global.constant.Auths;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
+import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.function.Supplier;
+
 @Component
+@Slf4j
 public class CustomAuthorizationManager implements
     AuthorizationManager<RequestAuthorizationContext> {
 
@@ -38,6 +41,7 @@ public class CustomAuthorizationManager implements
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication,
         RequestAuthorizationContext requestAuthorizationContext) {
+
         HttpServletRequest request = requestAuthorizationContext.getRequest();
 
         MemberDetails memberDetails = (MemberDetails) authentication.get().getPrincipal();

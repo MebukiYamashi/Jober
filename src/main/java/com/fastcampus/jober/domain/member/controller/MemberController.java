@@ -60,7 +60,7 @@ public class MemberController {
     }
 
     /**
-     * 토큰 기한을 0으로 축소시켜 로그아웃 합니다.
+     * 토큰 기한을 만료시킵니다.
      * @param authorization 토큰
      * @return 메세지 반환
      */
@@ -86,7 +86,7 @@ public class MemberController {
     }
 
     /**
-     * 토큰 검사
+     * 토큰 검사 API
      * @param authorization 토큰 정보
      * @return 이상이 없는 경우 true
      */

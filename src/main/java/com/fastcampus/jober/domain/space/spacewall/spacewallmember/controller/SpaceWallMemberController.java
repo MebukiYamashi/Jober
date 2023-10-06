@@ -6,7 +6,7 @@ import com.fastcampus.jober.domain.space.spacewall.spacewallmember.dto.SpaceWall
 import com.fastcampus.jober.domain.space.spacewall.spacewallmember.dto.SpaceWallMemberResponse.SpaceWallMemberDTO;
 import com.fastcampus.jober.domain.space.spacewall.spacewallmember.service.SpaceWallMemberService;
 import com.fastcampus.jober.global.error.exception.MemberException;
-import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
+import com.fastcampus.jober.global.error.exception.SpaceWallException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_REQUEST;
-import static com.fastcampus.jober.global.constant.ErrorCode.NOT_FOUND_MEMBER;
+import static com.fastcampus.jober.global.constant.ErrorCode.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class SpaceWallMemberController {
             @Valid @RequestBody List<AssignDTO> requests
     ) {
         if (!spaceWallService.checkSpaceWallIdExists(spaceWallId)) // SpaceWall 에 존재하지 않는 id 검색
-            throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
+            throw new SpaceWallException(INVALID_ID);
         if (!isExistMemberValid(requests)) // Member 에 존재하지 않는 email 검색
             throw new MemberException(NOT_FOUND_MEMBER);
 
@@ -63,7 +62,7 @@ public class SpaceWallMemberController {
             @PathVariable Long spaceWallId
     ) {
         if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
-            throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
+            throw new SpaceWallException(INVALID_ID);
 
         return ResponseEntity.ok(
                 new ResponseDTO<>(

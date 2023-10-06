@@ -3,6 +3,7 @@ package com.fastcampus.jober.domain.space.spacewall.spacewallhistory.controller;
 import com.fastcampus.jober.domain.space.spacewall.service.SpaceWallService;
 import com.fastcampus.jober.domain.space.spacewall.spacewallhistory.dto.SpaceWallHistoryResponse;
 import com.fastcampus.jober.domain.space.spacewall.spacewallhistory.service.SpaceWallHistoryService;
+import com.fastcampus.jober.global.error.exception.SpaceWallException;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.fastcampus.jober.domain.space.spacewall.spacewallhistory.dto.HistoryWrapper.HistoryRequestDTOWrapper;
 import static com.fastcampus.jober.domain.space.spacewall.spacewallhistory.dto.HistoryWrapper.HistoryResponseDTOWrapper;
-import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_REQUEST;
+import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class SpaceWallHistoryController {
             @PathVariable(name = "spaceWallId") Long spaceWallId
     ) {
         if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
-            throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
+            throw new SpaceWallException(INVALID_ID);
 
         return ResponseEntity
                 .ok(new ResponseDTO<>(
