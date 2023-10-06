@@ -6,11 +6,11 @@ import com.fastcampus.jober.domain.template.domain.MyTemplate;
 import com.fastcampus.jober.domain.template.domain.Template;
 import com.fastcampus.jober.domain.template.dto.TemplateResponseDto;
 import com.fastcampus.jober.domain.template.dto.TemplateResponseDto.ListDto;
+import com.fastcampus.jober.domain.template.exception.MyTemplateNotFoundException;
+import com.fastcampus.jober.domain.template.exception.TemplateException;
 import com.fastcampus.jober.domain.template.repository.MyTemplateRepository;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.error.exception.MemberException;
-import com.fastcampus.jober.global.error.exception.MyTemplateException;
-import com.fastcampus.jober.global.error.exception.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +51,7 @@ public class MyTemplateService {
             .orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 
         MyTemplate myTemplate = myTemplateRepository.findById(myTemplateId)
-            .orElseThrow(() -> new MyTemplateException(ErrorCode.MY_TEMPLATE_NOT_FOUND));
+            .orElseThrow(() -> new MyTemplateNotFoundException(ErrorCode.MY_TEMPLATE_NOT_FOUND));
 
         if (!myTemplate.getMember().equals(member)) {
             throw new MemberException(ErrorCode.MY_TEMPLATE_MEMBER_NOT_MATCHED);

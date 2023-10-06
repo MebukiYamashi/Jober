@@ -2,12 +2,12 @@ package com.fastcampus.jober.domain.space.component.service;
 
 import com.fastcampus.jober.domain.space.component.domain.Component;
 import com.fastcampus.jober.domain.space.component.dto.ComponentResponse;
-import com.fastcampus.jober.domain.space.component.repository.ComponentRepository;
 import com.fastcampus.jober.domain.space.component.dto.ComponentResponse.ComponentResponseDTO;
+import com.fastcampus.jober.domain.space.component.repository.ComponentRepository;
 import com.fastcampus.jober.domain.space.spacewall.domain.SpaceWall;
 import com.fastcampus.jober.domain.space.spacewall.repository.SpaceWallRepository;
+import com.fastcampus.jober.domain.template.exception.TemplateException;
 import com.fastcampus.jober.global.constant.ErrorCode;
-import com.fastcampus.jober.global.error.exception.TemplateException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class ComponentService {
     /**
      * 공유페이지 조회시 컴포넌트 리스트를 반환
      * todo builder들 dto에 클래스화 시키기.
+     *
      * @param spaceWall
      * @return List<ComponentResponse.ComponentResponseDTO>
-     *
      */
     @Transactional
     public List<ComponentResponseDTO> findComponentListByspaceWallId(SpaceWall spaceWall) {
@@ -53,8 +53,7 @@ public class ComponentService {
                     .updatedAt(component.getUpdatedAt())
                     .build());
 
-            }
-            else if (component.getType().equals("temp") && component.getTemplate() != null) {
+            } else if (component.getType().equals("temp") && component.getTemplate() != null) {
                 responseDTOList.add(ComponentResponse.ComponentResponseDTO.builder()
                     .id(component.getId())
                     .spaceWallId(component.getParentSpaceWall().getId())
@@ -67,8 +66,7 @@ public class ComponentService {
                     .createdAt(component.getCreatedAt())
                     .updatedAt(component.getUpdatedAt())
                     .build());
-            }
-            else {
+            } else {
                 responseDTOList.add(ComponentResponse.ComponentResponseDTO.builder()
                     .id(component.getId())
                     .spaceWallId(component.getParentSpaceWall().getId())

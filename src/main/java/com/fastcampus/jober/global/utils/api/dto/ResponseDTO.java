@@ -12,12 +12,12 @@ public class ResponseDTO<T> {
 
     public ResponseDTO() {
         this.code = HttpStatus.OK.value();
-        this.message = "성공";
+        this.message = "정상적으로 처리되었습니다.";
     }
 
     public ResponseDTO(T data) {
         this.code = HttpStatus.OK.value();
-        this.message = "성공";
+        this.message = "정상적으로 처리되었습니다.";
         this.data = data;
     }
 
@@ -36,5 +36,10 @@ public class ResponseDTO<T> {
         this.code = HttpStatus.OK.value();
         this.message = message;
         this.data = data;
+    }
+
+    public ResponseDTO(HttpStatus httpStatus, String message) {
+        this.code = httpStatus.value();
+        this.message = message;
     }
 }

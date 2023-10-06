@@ -4,13 +4,14 @@ import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.template.domain.MyTemplate;
 import com.fastcampus.jober.domain.template.domain.Template;
 import com.fastcampus.jober.domain.template.dto.TemplateResponseDto.ListDto;
+import com.fastcampus.jober.domain.template.exception.TemplateException;
+import com.fastcampus.jober.domain.template.exception.TemplateNotFoundException;
 import com.fastcampus.jober.domain.template.repository.MyTemplateRepository;
 import com.fastcampus.jober.domain.template.repository.TemplateRepository;
 import com.fastcampus.jober.domain.template.repository.TemplateTypeRepository;
 import com.fastcampus.jober.domain.template.repository.TemplateUsedHistoryRepository;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.constant.TemplateCategory;
-import com.fastcampus.jober.global.error.exception.TemplateException;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,7 +54,7 @@ public class TemplateService {
     @Transactional
     public void addTemplate(Member member, Long templateId) {
         Template template = templateRepository.findById(templateId)
-            .orElseThrow(() -> new TemplateException(ErrorCode.TEMPLATE_NOT_FOUND));
+            .orElseThrow(() -> new TemplateNotFoundException(ErrorCode.TEMPLATE_NOT_FOUND));
 
         MyTemplate myTemplate = MyTemplate.builder().member(member).template(template).build();
 

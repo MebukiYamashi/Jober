@@ -1,7 +1,11 @@
 package com.fastcampus.jober.global.error.advice;
 
-import com.fastcampus.jober.global.error.exception.*;
-import com.fastcampus.jober.global.utils.api.ApiUtils;
+import com.fastcampus.jober.global.error.exception.DomainException;
+import com.fastcampus.jober.global.error.exception.Exception401;
+import com.fastcampus.jober.global.error.exception.Exception403;
+import com.fastcampus.jober.global.error.exception.Exception500;
+import com.fastcampus.jober.global.error.exception.ExceptionValid;
+import com.fastcampus.jober.global.error.exception.TokenException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.MethodNotAllowedException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,39 +38,47 @@ public class MyExceptionAdvice {
     }
 
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<?> globalExceptionHandler(DomainException e) {
+    public ResponseEntity<?> handleDomainException(DomainException e) {
 
-        ResponseDTO<String> response = new ResponseDTO<>(e.getHttpStatus(), e.getMessage(), null);
+        ResponseDTO<String> response = new ResponseDTO<>(e.getHttpStatus(), e.getMessage());
 
         return new ResponseEntity<>(response, e.getHttpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> methodValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<?> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException e) {
         ExceptionValid ev = new ExceptionValid(
-            e.getBindingResult().getFieldError().getCode(),
+            e.getBindingResult().getFieldError().getField(),
             e.getBindingResult().getFieldError().getDefaultMessage()
         );
         return new ResponseEntity<>(ev.body(), ev.status());
     }
 
-    @ExceptionHandler(TokenException.class)
-    public ResponseEntity<ResponseDTO<String>> tokenError(TokenException e) {
+    @ExceptionHandler(MethodNotAllowedException.class)
+    public ResponseEntity<ResponseDTO<String>> handleMethodNotAllowedException(
+        MethodNotAllowedException e) {
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.METHOD_NOT_ALLOWED,
+            e.getMessage());
 
-        ResponseDTO<String> response = new ResponseDTO<>(e.getHttpStatus(), e.getMessage(), null);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<ResponseDTO<String>> handleTokenException(TokenException e) {
+
+        ResponseDTO<String> response = new ResponseDTO<>(e.getHttpStatus(), e.getMessage());
 
         return new ResponseEntity<>(response, e.getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> unknownServerError(Exception e) {
+    public ResponseEntity<?> handleException(Exception e) {
 
-        ApiUtils.ApiResult<?> apiResult =
-                ApiUtils.error(
-                        e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR
-                );
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.INTERNAL_SERVER_ERROR,
+            e.getMessage());
+
         log.error(e.getMessage(), e);
-        return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

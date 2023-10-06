@@ -4,7 +4,6 @@ import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
@@ -20,9 +19,8 @@ public class FilterResponseUtils {
         httpServletResponse.setStatus(status.value());
         httpServletResponse.setContentType("application/json; charset=utf-8");
         ResponseDTO<?> responseDto = new ResponseDTO<>(
-                status,
-                status.getReasonPhrase(),
-                e.getMessage()
+            status,
+            e.getMessage()
         );
         ObjectMapper om = new ObjectMapper();
         String responseBody = om.writeValueAsString(responseDto);

@@ -1,11 +1,15 @@
 package com.fastcampus.jober.domain.space.component.componentTemp.controller;
 
+import static com.fastcampus.jober.global.constant.ErrorCode.INVALID_REQUEST;
+
 import com.fastcampus.jober.domain.space.component.componentTemp.dto.ComponentTempRequest.AddDTO;
 import com.fastcampus.jober.domain.space.component.componentTemp.dto.ComponentTempRequest.ModifyDTO;
 import com.fastcampus.jober.domain.space.component.componentTemp.dto.ComponentTempResponse.ComponentTempResponseDTO;
 import com.fastcampus.jober.domain.space.component.componentTemp.service.ComponentTempService;
+import com.fastcampus.jober.domain.space.spacewall.service.SpaceWallService;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.error.exception.ComponentTempException;
+import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
 import com.fastcampus.jober.global.utils.api.dto.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComponentTempController {
 
     private final ComponentTempService componentTempService;
+    private final SpaceWallService spaceWallService;
 
     /**
      * 임시 컴포넌트의 생성
@@ -67,18 +73,17 @@ public class ComponentTempController {
     @GetMapping("/view/{spaceWallId}")
     public ResponseEntity<ResponseDTO<ComponentTempResponseDTO>> componentTempDetails(
         @PathVariable("spaceWallId") Long spaceWallId,
-        @RequestBody ModifyDTO modifyDTO) {
+        @RequestParam Long componentTempId) {
 
-        System.out.println("컴포넌트 템프 조회");
-        System.out.println(spaceWallId);
-        System.out.println(modifyDTO.getComponentTempId());
+        if (!spaceWallService.checkSpaceWallIdExists(spaceWallId))
+            throw new SpaceWallNotFoundException(INVALID_REQUEST.getMessage());
 
-        if (!componentTempService.checkComponentTempExists(modifyDTO.getComponentTempId())) {
+        if (!componentTempService.checkComponentTempExists(componentTempId)) {
             throw new ComponentTempException(ErrorCode.INVALID_COMPONENTTEMPID);
         }
 
         ComponentTempResponseDTO componentTempResponseDTO = componentTempService.findComponentTemp(
-            modifyDTO.getComponentTempId());
+            componentTempId);
 
         return new ResponseEntity<>(
             new ResponseDTO<>(HttpStatus.OK, "임시 컴포넌트가 조회 되었습니다.", componentTempResponseDTO),

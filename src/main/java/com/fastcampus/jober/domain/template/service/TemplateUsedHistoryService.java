@@ -4,11 +4,11 @@ import com.fastcampus.jober.domain.member.domain.Member;
 import com.fastcampus.jober.domain.member.repository.MemberRepository;
 import com.fastcampus.jober.domain.template.domain.Template;
 import com.fastcampus.jober.domain.template.domain.TemplateUsedHistory;
+import com.fastcampus.jober.domain.template.exception.TemplateNotFoundException;
 import com.fastcampus.jober.domain.template.repository.TemplateRepository;
 import com.fastcampus.jober.domain.template.repository.TemplateUsedHistoryRepository;
 import com.fastcampus.jober.global.constant.ErrorCode;
 import com.fastcampus.jober.global.error.exception.MemberException;
-import com.fastcampus.jober.global.error.exception.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class TemplateUsedHistoryService {
             ErrorCode.MEMBER_NOT_FOUND));
 
         Template template = templateRepository.findById(templateId)
-            .orElseThrow(() -> new TemplateException(ErrorCode.TEMPLATE_NOT_FOUND));
+            .orElseThrow(() -> new TemplateNotFoundException(ErrorCode.TEMPLATE_NOT_FOUND));
 
         TemplateUsedHistory oldHistory = findHistory(member, template);
 

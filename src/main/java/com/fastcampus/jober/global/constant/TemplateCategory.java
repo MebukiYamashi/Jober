@@ -1,6 +1,6 @@
 package com.fastcampus.jober.global.constant;
 
-import com.fastcampus.jober.global.error.exception.TemplateException;
+import com.fastcampus.jober.domain.template.exception.TemplateException;
 import java.util.Arrays;
 import lombok.AllArgsConstructor;
 
