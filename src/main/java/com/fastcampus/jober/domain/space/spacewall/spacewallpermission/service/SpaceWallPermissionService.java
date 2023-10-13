@@ -10,9 +10,11 @@ import com.fastcampus.jober.domain.space.spacewall.spacewallmember.repository.Sp
 import com.fastcampus.jober.domain.space.spacewall.spacewallpermission.domain.SpaceWallPermission;
 import com.fastcampus.jober.domain.space.spacewall.spacewallpermission.dto.SpaceWallPermissionRequest;
 import com.fastcampus.jober.domain.space.spacewall.spacewallpermission.dto.SpaceWallPermissionResponse;
+import com.fastcampus.jober.global.constant.ErrorCode;
+import com.fastcampus.jober.global.error.exception.MemberException;
+import com.fastcampus.jober.global.error.exception.SpaceWallException;
 import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import com.fastcampus.jober.global.constant.Auths;
-import com.fastcampus.jober.global.error.exception.InvalidTargetSequenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +33,11 @@ public class SpaceWallPermissionService {
     @Transactional
     public SpaceWallPermissionResponse updatePermission(Long id, SpaceWallPermissionRequest requestDto, MemberDetails memberDetails) {
         if (memberDetails == null || !memberDetails.getMember().getId().equals(requestDto.getMemberId())) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new MemberException(ErrorCode.INVALID_USER);
         }
 
         SpaceWallPermission spaceWallPermission = spaceWallPermissionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 공유페이스 권한 ID입니다."));
+                .orElseThrow(() -> new SpaceWallException(ErrorCode.INVALID_SPACEWALL_PERMISSION_ID));
 
         spaceWallPermission.setAuths(requestDto.getAuths());
 
@@ -46,18 +48,18 @@ public class SpaceWallPermissionService {
     @Transactional
     public SpaceWallPermissionResponse moveSpaceWallPermission(Long id, Long targetSequence, MemberDetails memberDetails) {
         if (memberDetails == null) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new MemberException(ErrorCode.INVALID_USER);
         }
 
         SpaceWall currentSpaceWall = spaceWallRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 공유페이스 ID입니다."));
+                .orElseThrow(() -> new SpaceWallException(ErrorCode.INVALID_SPACEWALL_ID));
 
         if (!currentSpaceWall.getCreateMember().getId().equals(memberDetails.getMember().getId())) {
-            throw new IllegalArgumentException("이 페이지를 이동시킬 권한이 없습니다.");
+            throw new SpaceWallException(ErrorCode.NO_MOVE_PERMISSION);
         }
 
         if (targetSequence == null || targetSequence < 1 || targetSequence > spaceWallRepository.count()) {
-            throw new InvalidTargetSequenceException("잘못된 타겟 순서입니다. 입력 값: " + targetSequence);
+            throw new SpaceWallException(ErrorCode.INVALID_TARGET_SEQUENCE, "입력 값: " + targetSequence);
         }
 
         int currentSequence = currentSpaceWall.getSequence();
@@ -76,14 +78,14 @@ public class SpaceWallPermissionService {
                 spaceWallRepository.save(spaceWall);
             }
         } else {
-            throw new IllegalArgumentException("이동할 필요가 없습니다.");
+            throw new SpaceWallException(ErrorCode.UNNECESSARY_MOVE_OPERATION);
         }
 
         currentSpaceWall.setSequence(targetSeqInt);
         spaceWallRepository.save(currentSpaceWall);
 
         SpaceWallPermission spaceWallPermission = spaceWallPermissionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 공유페이스 권한 ID입니다."));
+                .orElseThrow(() -> new SpaceWallException(ErrorCode.SPACE_WALL_NOT_FOUND));
 
         return new SpaceWallPermissionResponse(spaceWallPermission);
     }
@@ -91,10 +93,10 @@ public class SpaceWallPermissionService {
     @Transactional
     public void assignPermissionToSpaceWall(Auths auth, Long spaceWallId, Long memberId) {
         SpaceWall spaceWall = spaceWallRepository.findById(spaceWallId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 공유페이스 ID입니다."));
+                .orElseThrow(() -> new SpaceWallException(ErrorCode.INVALID_SPACEWALL_PERMISSION_ID));
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 회원 ID입니다."));
+                .orElseThrow(() -> new MemberException(ErrorCode.SPACE_WALL_NOT_FOUND));
 
         SpaceWallMember spaceWallMember = spaceWallMemberRepository
                 .findBySpaceWallId(spaceWallId)

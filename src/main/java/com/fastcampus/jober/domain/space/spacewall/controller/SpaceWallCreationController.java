@@ -24,6 +24,11 @@ public class SpaceWallCreationController {
     private final SpaceWallService spaceWallService;
     private final SpaceWallPermissionService permissionService;
 
+    /**
+     * 새로운 공유페이지를 생성합니다.
+     * @param createDto 공유페이지 생성 요청 정보
+     * @return 생성된 공유페이지 정보 반환
+     */
     @PostMapping
     public ResponseEntity<ResponseDTO<ResponseDto>> create(
             @RequestBody CreateDto createDto
@@ -43,13 +48,4 @@ public class SpaceWallCreationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "공유페이지가 생성되었습니다.", createdSpaceWallDto));
     }
 
-//    @PostMapping("/empty")
-//    public ResponseEntity<ResponseDTO<SpaceWallResponse.EmptySpaceResponseDto>> createEmptySpace(
-//            @RequestBody SpaceWallRequest.CreateDto createDto,
-//            @AuthenticationPrincipal MemberDetails memberDetails) {
-//
-//        SpaceWallResponse.EmptySpaceResponseDto createdEmptySpaceDto = spaceWallService.createEmptySpace(createDto, memberDetails);
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>(HttpStatus.CREATED, "빈 공유페이지가 생성되었습니다.", createdEmptySpaceDto));
-//    }
 }

@@ -7,6 +7,8 @@ import com.fastcampus.jober.domain.space.component.componenthistory.repository.C
 import com.fastcampus.jober.domain.member.repository.MemberRepository;
 import com.fastcampus.jober.domain.space.spacewall.spacewallhistory.repository.SpaceWallHistoryRepository;
 import com.fastcampus.jober.domain.space.spacewall.spacewallhistory.domain.SpaceWallHistory;
+import com.fastcampus.jober.global.constant.ErrorCode;
+import com.fastcampus.jober.global.error.exception.SpaceWallException;
 import com.fastcampus.jober.global.security.auth.session.MemberDetails;
 import com.fastcampus.jober.global.error.exception.SpaceWallBadRequestException;
 import com.fastcampus.jober.global.error.exception.SpaceWallNotFoundException;
@@ -83,6 +85,9 @@ public class SpaceWallHistoryService {
     public List<SpaceWallHistoryResponseDTO> findRecentHistoryByMemberId(Long memberId) {
         List<SpaceWallHistory> histories =
                 spaceWallHistoryRepository.findTop5ByCreateMemberIdOrderByCreatedAtDesc(memberId);
+        if (histories.isEmpty()) {
+            throw new SpaceWallException(ErrorCode.HISTORY_NOT_FOUND);
+        }
         List<SpaceWallHistoryResponseDTO> response = new ArrayList<>();
 
         for (SpaceWallHistory history : histories) {
@@ -95,10 +100,10 @@ public class SpaceWallHistoryService {
     @Transactional(readOnly = true)
     public SpaceWallHistoryResponseDTO findHistoryByMemberIdAndHistoryId(Long memberId, Long historyId) {
         SpaceWallHistory history = spaceWallHistoryRepository.findById(historyId)
-                .orElseThrow(() -> new SpaceWallNotFoundException("히스토리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new SpaceWallException(ErrorCode.SPACEWALL_HISTORY_NOT_FOUND));
 
         if (!history.getCreateMemberId().equals(memberId)) {
-            throw new SpaceWallBadRequestException("잘못된 접근입니다.");
+            throw new SpaceWallException(ErrorCode.INVALID_HISTORY_ACCESS);
         }
 
         return new SpaceWallHistoryResponseDTO(history);

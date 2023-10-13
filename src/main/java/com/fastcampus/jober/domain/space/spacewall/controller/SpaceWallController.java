@@ -23,6 +23,11 @@ public class SpaceWallController {
 
     private final SpaceWallService spaceWallService;
 
+    /**
+     * ID를 통해 공유스페이스 정보를 조회합니다.
+     * @param id 공유스페이스 ID
+     * @return 공유스페이스 정보 반환
+     */
     @GetMapping("/view/{id}")
     public ResponseEntity<ResponseDTO<ResponseDto>> getSpaceWall(
         @PathVariable Long id) {
@@ -31,6 +36,13 @@ public class SpaceWallController {
         return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK, "완료되었습니다.", foundSpaceWallDto));
     }
 
+    /**
+     * ID를 통해 공유스페이스 정보를 수정합니다.
+     * @param id 공유스페이스 ID
+     * @param updateDto 공유스페이스 수정 정보
+     * @param memberDetails 사용자 정보
+     * @return 수정된 공유스페이스 정보 반환
+     */
     @PutMapping("/edit/{id}")
     public ResponseEntity<ResponseDTO<ResponseDto>> updateSpaceWall(
         @PathVariable Long id,
@@ -43,6 +55,12 @@ public class SpaceWallController {
         return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK, "수정되었습니다.", updatedSpaceWallDto));
     }
 
+    /**
+     * ID를 통해 공유스페이스 정보를 삭제합니다.
+     * @param id 공유스페이스 ID
+     * @param memberDetails 사용자 정보
+     * @return 삭제 성공 메세지 반환
+     */
     @DeleteMapping("/del/{id}")
     public ResponseEntity<ResponseDTO<String>> deleteSpaceWall(
         @PathVariable Long id,
