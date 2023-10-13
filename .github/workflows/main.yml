@@ -1,0 +1,137 @@
+name: Azure CI/CD with Gradle
+
+env:
+  AZURE_WEBAPP_NAME: jober-workspace    
+  JAVA_VERSION: '17'                  
+  DISTRIBUTION: 'temurin'               
+
+on:
+  push:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.DISTRIBUTION }}
+          
+      - name: Generate application-prod.yml
+        run: |
+          echo "server:" > application-prod.yml
+          echo "  servlet:" >> application-prod.yml
+          echo "    encoding:" >> application-prod.yml
+          echo "      charset: utf-8" >> application-prod.yml
+          echo "      force: true" >> application-prod.yml
+          echo "spring:" >> application-prod.yml
+          echo "  cloud:" >> application-prod.yml
+          echo "    azure:" >> application-prod.yml
+          echo "      storage:" >> application-prod.yml
+          echo "        account: ${{ secrets.AZURE_STORAGE_ACCOUNT }}" >> application-prod.yml
+          echo "        key: ${{ secrets.AZURE_STORAGE_KEY }}" >> application-prod.yml
+          echo "        container-name: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" >> application-prod.yml
+          echo "  servlet:" >> application-prod.yml
+          echo "    multipart:" >> application-prod.yml
+          echo "      max-file-size: 10MB" >> application-prod.yml
+          echo "      max-request-size: 10MB" >> application-prod.yml
+          echo "      enabled: true" >> application-prod.yml
+          echo "  datasource:" >> application-prod.yml
+          echo "    url: ${{ secrets.AZURE_DATASOURCE_URL }}" >> application-prod.yml
+          echo "    driver-class-name: com.mysql.cj.jdbc.Driver" >> application-prod.yml
+          echo "    username: ${{ secrets.AZURE_DATASOURCE_USERNAME }}" >> application-prod.yml
+          echo "    password: ${{ secrets.AZURE_DATASOURCE_PASSWORD }}" >> application-prod.yml
+          echo "  jpa:" >> application-prod.yml
+          echo "    hibernate:" >> application-prod.yml
+          echo "      ddl-auto: none" >> application-prod.yml
+          echo "    properties:" >> application-prod.yml
+          echo "      hibernate:" >> application-prod.yml
+          echo "        default_batch_fetch_size: 100" >> application-prod.yml
+          echo "  data:" >> application-prod.yml
+          echo "    redis:" >> application-prod.yml
+          echo "      host: ${{ secrets.AZURE_REDIS_HOST }}" >> application-prod.yml
+          echo "      port: ${{ secrets.AZURE_REDIS_PORT }}" >> application-prod.yml
+          echo "      password: ${{ secrets.AZURE_REDIS_PASSWORD }}" >> application-prod.yml
+          echo "  session:" >> application-prod.yml
+          echo "    store-type: redis" >> application-prod.yml
+          echo "my-env:" >> application-prod.yml
+          echo "  jwt:" >> application-prod.yml
+          echo "    secret: ${{ secrets.MY_ENV_JWT_SECRET }}" >> application-prod.yml
+          echo "logging:" >> application-prod.yml
+          echo "  level:" >> application-prod.yml
+          echo "    com.fastcampus.jober: DEBUG" >> application-prod.yml
+        shell: bash
+
+      - name: Upload application-prod.yml
+        uses: actions/upload-artifact@v3
+        with:
+          name: config-file
+          path: application-prod.yml
+          
+      - name: Move application-prod.yml to the appropriate directory
+        run: |
+            mkdir -p ./src/main/resources/
+            mv -f application-prod.yml ./src/main/resources/application-prod.yml
+
+      - name: caching
+        uses: actions/cache@v3
+        with:
+          path: |  
+                ~/.gradle/caches
+                ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+        
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test -Pprod
+        shell: bash
+        
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-app
+          path: '${{ github.workspace }}/build/libs/*.jar'
+          
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download application-prod.yml
+        uses: actions/download-artifact@v3
+        with:
+          name: config-file
+          path: application-prod.yml
+            
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: java-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '*.jar'

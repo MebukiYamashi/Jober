@@ -88,3 +88,12 @@ tasks.withType(JavaCompile) {
 clean {
     delete file(generated)
 }
+
+// Plain 없이 fat만 생성
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
